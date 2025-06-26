@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="Student Dashboard for Math Mastery: Track progress, access resources, and manage assignments easily.">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/Dashboard/style.css}" rel="stylesheet">
+
+    <style>
+
+
+        #card5-hover-info {
+            display: none;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 250px;
+            z-index: 10;
+        }
+
+        #card1:hover + #card5-hover-info {
+            display: block;
+
+        }
+
+        /* Hover effect on .card1 for emphasis */
+        #card1:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+
+        #answered, #points {
+            margin: 0;
+            font-size: 1rem;
+            color: white;
+        }
+
+        #answered-count {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        #points-earned {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        #next-button {
+            margin-left: auto; /* Pushes the Next button to the right */
+        }
+
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+
+        .modal.show .modal-dialog {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            50% {
+                transform: translateX(5px);
+            }
+            75% {
+                transform: translateX(-5px);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        .shake {
+            animation: shake 0.3s ease-in-out;
+        }
+
+        footer {
+            position: relative;
+            text-align: center;
+            margin-top: 200px;
+            color: black;
+        }
+
+        @media (max-width: 600px) {
+            .container h1 {
+                font-size: 16px;
+            }
+
+            .card-body {
+                display: flex;
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+<!-- Sidebar -->
+<nav class="sidebar d-flex flex-column p-3 bg-dark">
+    <div class="sidebar-header">
+        <a href="index.html" class="logo d-flex align-items-center text-decoration-none">
+            <img src="img/logo.png" alt="Logo" width="40">
+            <h2 class="ms-2" style="font-size: 22px">Math Mastery</h2>
+        </a>
+    </div>
+    <ul class="nav nav-pills flex-column mt-3">
+        <li class="nav-item">
+            <a href="newDashbaord.html" class="nav-link ">
+                <i class="fas fa-tachometer-alt me-2"></i> Overview
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#progress" class="nav-link">
+                <i class="fas fa-chart-line"></i> Progress
+            </a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{practice-mode}" class="nav-link active">
+                <i class="fas fa-book-open me-2"></i> Practice Mode
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#exam" class="nav-link">
+                <i class="fas fa-clipboard-check"></i> Exam Mode
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#resources" class="nav-link">
+                <i class="fas fa-folder"></i> Resources
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<!-- Main Content -->
+<main class="content p-4">
+
+    <input type="hidden" id="subtopic_id" th:value="${subtopic.id}">
+
+
+    <!-- Header  -->
+    <header class="header">
+        <div class="sidebar-header2">
+            <i href="index.html" class="logo d-flex align-items-center ">
+                <img th:src="@{img/logo.png}" alt="Logo" width="40">
+                <h2 style=" font-size: 22px">Math Mastery</h2>
+            </i>
+        </div>
+        <!-- Search bar -->
+        <div class="search-container">
+            <label>
+                <input type="text" class="search-input" placeholder="Search...">
+            </label>
+            <i class="fas fa-search search-icon"></i>
+        </div>
+        <i class="fas fa-bars menu-icon " type="button"
+           data-bs-toggle="offcanvas"
+           data-bs-target="#sidebar"
+           aria-controls="sidebar"></i>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="practice-mode.html">Practice mode</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Numbers</li>
+            </ol>
+        </nav>
+
+        <i class="fas fa-user-circle account-icon" type="button" data-bs-toggle="offcanvas"
+           data-bs-target="#accountManager"
+           aria-controls="accountManager"></i>
+    </header>
+
+    <div class="container py-4">
+        <div class="text-left mb-4">
+            <h1 class="text-uppercase border-bottom pb-2">Identifying Rational and Irrational Numbers</h1>
+        </div>
+
+        <div class="card shadow-sm mb-3" id="card1">
+            <div class="card-body d-flex justify-content-between align-items-center bg-secondary text-white">
+                <div>
+                    <p id="answered" class="mb-0"><strong>Questions Answered:</strong> <span
+                            id="answered-count">0</span></p>
+                </div>
+                <div>
+                    <p id="points" class="mb-0"><strong>Points:</strong> <span id="points-earned">0</span>/100</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden card -->
+        <div id="card5-hover-info">
+            <p>Points are calculated based on correct answers. Aim for 100 points by answering all questions
+                correctly!</p>
+        </div>
+
+
+        <div class="card quiz-container shadow-sm mb-4">
+            <div class="card-body">
+
+                <div id="spinner" class=" justify-content-center align-items-center"
+                     style="height: 100px; display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <section id="question-section" class="question-section mb-4">
+
+                    <!-- Questions will be dynamically loaded here -->
+                </section>
+
+                <div class="d-flex justify-content-between">
+                    <button id="previous-button" class="btn btn-outline-dark">Previous</button>
+                    <button id="next-button" class="btn btn-outline-dark">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <button class="btn btn-outline-secondary" onclick="history.back()">
+                <i class="fas fa-arrow-left me-2"></i> Back
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Account Manager Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="accountManager" aria-labelledby="accountManagerLabel"
+         style="background-color: var(--background);">
+        <div class="offcanvas-header" style="border-bottom: 1px solid var(--progress-bg);">
+            <h5 class="offcanvas-title" id="accountManagerOffcanvasLabel"
+                style="font-size: 1.5rem; color: black; font-weight: bold;">Account Manager</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"
+                    style="background-color: var(--secondary);">
+            </button>
+
+        </div>
+        <div class="offcanvas-body">
+            <div class="text-center mb-4">
+                <i class="fas fa-user-circle" style="font-size: 4rem; color: var(--secondary);"></i>
+                <p class="mt-2" style="font-size: 1.25rem; color: var(--text-dark);"><strong>Student Name</strong></p>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item d-flex align-items-center" style="border: none; padding: 15px;">
+                    <i class="fas fa-user me-3" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    <a href="#profile" class="text-decoration-none"
+                       style="color: var(--text-dark); font-size: 1.1rem;">Profile</a>
+                </li>
+                <li class="list-group-item d-flex align-items-center" style="border: none; padding: 15px;">
+                    <i class="fas fa-cog me-3" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    <a href="#settings" class="text-decoration-none"
+                       style="color: var(--text-dark); font-size: 1.1rem;">Settings</a>
+                </li>
+                <li class="list-group-item d-flex align-items-center" style="border: none; padding: 15px;">
+                    <i class="fas fa-bell me-3" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    <a href="#notifications" class="text-decoration-none"
+                       style="color: var(--text-dark); font-size: 1.1rem;">Notifications</a>
+                </li>
+            </ul>
+            <div class="text-center mt-4">
+                <button class="btn btn-primary"
+                        style="background-color: var(--primary); max-width: 100%; width: 380px; border: none; padding: 6px 24px; border-radius: 5px; font-size: 1rem;">
+                    Log Out
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Sidebar Offcanvas -->
+    <div class="offcanvas offcanvas-start text-white bg-dark" tabindex="-1" id="sidebar"
+         aria-labelledby="sidebar-label">
+        <div class="offcanvas-header">
+            <!-- Search Bar for Small Devices -->
+            <div class="search-container1 d-md-none mb-3">
+                <label>
+                    <input type="text" class="search-input1 form-control" placeholder="Search...">
+                </label>
+                <i class="fas fa-search search-icon1"></i>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+        </div>
+
+
+        <div class="offcanvas-body">
+
+            <nav class="nav flex-column">
+                <a href="#overview" class="nav-link text-white active">
+                    <i class="fas fa-tachometer-alt"></i> Overview
+                </a>
+                <a href="#progress" class="nav-link text-white">
+                    <i class="fas fa-chart-line"></i> Progress
+                </a>
+                <a href="#practice" class="nav-link text-white">
+                    <i class="fas fa-book-open"></i> Practice Mode
+                </a>
+                <a href="#exam" class="nav-link text-white">
+                    <i class="fas fa-clipboard-check"></i> Exam Mode
+                </a>
+                <a href="#resources" class="nav-link text-white">
+                    <i class="fas fa-folder"></i> Resources
+                </a>
+            </nav>
+        </div>
+    </div>
+
+
+    <!-- Solution Modal -->
+    <div class="modal fade" id="solutionModal" tabindex="-1" aria-labelledby="solutionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="solutionModalLabel">Solution</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="solutionText"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<footer class="mt-5 text-center">
+    <p class="mb-0">&copy; 2025 Math Mastery. All Rights Reserved.</p>
+    <div>
+        <a href="#contact" class="text-muted me-3">Contact</a>
+        <a href="#support" class="text-muted me-3">Support</a>
+        <a href="#privacy" class="text-muted">Privacy Policy</a>
+    </div>
+</footer>
+
+<script>
+
+    const subtopicElement = document.querySelector('#subtopic_id');
+    if (!subtopicElement) {
+        console.error("Missing element with ID 'subtopic_id'");
+    }
+    const subtopic_id = document.getElementById('subtopic_id').value;
+
+    if (!subtopic_id || isNaN(subtopic_id)) {
+        console.error("Invalid subtopic_id:", subtopic_id);
+    }
+
+
+    let currentQuestionIndex = 0; // Default to the first question
+    let questions = [];
+
+    // Load questions from the server and display the saved index
+    async function loadQuestions(subtopic_id) {
+        const spinner = document.getElementById('spinner');
+        const questionSection = document.getElementById('question-section');
+
+        try {
+            toggleSpinner(true);
+            questionSection.style.display = 'none';
+
+            console.log("subtopicId before fetch:", subtopic_id);
+
+
+            if (!subtopic_id || isNaN(subtopic_id)) {
+                console.error("Invalid subtopicId:", subtopic_id);
+                return;
+            }
+
+            const response = await fetch(`/api/questions/subtopic/${subtopic_id}`);
+
+            questions = await response.json();
+
+            const savedIndex = localStorage.getItem('currentQuestionIndex');
+            currentQuestionIndex = savedIndex ? parseInt(savedIndex, 10) : 0;
+
+
+            // Artificial delay to avoid flashing
+            setTimeout(() => {
+                toggleSpinner(false);
+                questionSection.style.display = 'block';
+                displayQuestion(currentQuestionIndex);
+            }, 500); // Adjust delay as needed
+
+            questionSection.style.display = 'block';
+            displayQuestion(currentQuestionIndex);
+        } catch (error) {
+            toggleSpinner(false);
+            console.error('Error fetching questions:', error);
+
+            spinner.style.display = 'none';
+            questionSection.style.display = 'block';
+            questionSection.innerHTML = `
+      <p class="text-danger">Unable to load questions. Please try again later.</p>
+      <button id="retry-button" class="btn btn-primary">Retry</button>
+    `;
+
+            //   document.getElementById('retry-button').addEventListener('click', loadQuestions);
+            document.getElementById('retry-button').addEventListener('click', () => {
+                loadQuestions(subtopic_id);
+            });
+        }
+
+    }
+
+    function toggleSpinner(show) {
+        const spinner = document.getElementById('spinner');
+        spinner.style.display = show ? 'flex' : 'none';
+    }
+
+
+    // Save the current question index to localStorage
+    function saveCurrentIndex() {
+        localStorage.setItem('currentQuestionIndex', currentQuestionIndex);
+    }
+
+
+    function updateAnsweredCounter() {
+        const answeredQuestions = questions.filter(question =>
+            localStorage.getItem(`answer-${question.id}`) !== null
+        ).length;
+
+        document.getElementById('answered-count').textContent =
+            `${answeredQuestions} `;
+    }
+
+
+    function updatePoints() {
+        let correctAnswers = 0;
+
+        // Loop through all questions and check if the answers are correct
+        questions.forEach(question => {
+            const storedResult = localStorage.getItem(`result-${question.id}`);
+            if (storedResult && storedResult.includes('check')) {
+                correctAnswers++; // Increment for correct answers
+            }
+        });
+
+        // Calculate the points (example: 100 points for all correct)
+        const points = correctAnswers * (100 / questions.length);
+        document.getElementById('points-earned').textContent = `${points.toFixed(0)}`;
+        document.getElementById('answered-count').textContent = `${correctAnswers} `;
+    }
+
+
+    // Display the question at the specified index
+    function displayQuestion(index) {
+        const questionSection = document.getElementById('question-section');
+        questionSection.innerHTML = ''; // Clear existing content
+
+        const previousButton = document.getElementById('previous-button');
+        previousButton.style.display = index === 0 ? 'none' : 'inline-block';
+
+        const nextButton = document.getElementById('next-button');
+        nextButton.style.display = index === questions.length - 1 ? 'none' : 'inline-block';
+
+        if (index >= 0 && index < questions.length) {
+            const question = questions[index];
+            const questionBody = document.createElement('div');
+            questionBody.classList.add('question-body');
+            questionBody.innerHTML = `<form id="miniPracticeForm" class="mb-3">
+  <label for="answer-${question.id}" class="form-label">${question.text}</label>
+  <div class="input-group">
+    <span class="input-group-text" id="result-${question.id}"></span>
+    <input type="text" class="form-control" id="answer-${question.id}" placeholder="Your answer">
+    <button type="submit" class="btn btn-primary" id="submit-button-${question.id}">Submit</button>
+  </div>
+</form>
+
+    `;
+
+            questionSection.appendChild(questionBody);
+
+            // Apply stored button state
+            applyButtonState(question.id);
+
+            // Attach the event listener for the submit button dynamically
+            const submitButton = questionBody.querySelector('button');
+            submitButton.addEventListener('click', () => checkAnswer(question.id));
+
+            // Load stored answer and result
+            const storedAnswer = localStorage.getItem(`answer-${question.id}`);
+            const storedResult = localStorage.getItem(`result-${question.id}`);
+            if (storedAnswer && storedResult) {
+                const inputField = document.getElementById(`answer-${question.id}`);
+                const resultSpan = document.getElementById(`result-${question.id}`);
+                inputField.value = storedAnswer;
+                inputField.disabled = true;
+                resultSpan.innerHTML = storedResult;
+            }
+
+            updatePoints();
+            updateAnsweredCounter();
+        }
+    }
+
+    // Check the user's answer
+    function checkAnswer(questionId) {
+        const inputField = document.getElementById(`answer-${questionId}`);
+        const userAnswer = inputField.value.trim();
+        const question = questions.find(q => q.id === questionId);
+
+        if (!userAnswer) {
+            // Add shake animation if the field is empty
+            inputField.classList.add('shake');
+            inputField.style.borderColor = 'red';
+            setTimeout(() => {
+                inputField.classList.remove('shake');
+                inputField.style.borderColor = '';
+            }, 500);
+            return;
+        }
+
+        const resultSpan = document.getElementById(`result-${questionId}`);
+        let resultHTML;
+        const submitButton = document.querySelector(`#submit-button-${questionId}`);
+
+        let isCorrect = false;
+        if (userAnswer === question.correctAnswer) {
+            resultHTML = `<i class="fas fa-check text-success"></i>Correct!`;
+            updateButtonState(submitButton, 'Solution', 'green');
+            showSolutionModal(question.solution);
+            isCorrect = true;
+        } else {
+            resultHTML = `<i class="fas fa-times text-danger"></i>Incorrect`;
+            updateButtonState(submitButton, 'Solution', 'red');
+            showSolutionModal(question.solution);
+            isCorrect = false;
+        }
+
+        //submit user progress to backend
+        submitUserProgress(questionId, isCorrect);
+
+        // Save answer and result in localStorage
+        localStorage.setItem(`answer-${questionId}`, userAnswer);
+        localStorage.setItem(`result-${questionId}`, resultHTML);
+
+        // Store the submit button state
+        localStorage.setItem(`submit-button-${questionId}`, JSON.stringify({
+            text: submitButton.innerText,
+            backgroundColor: submitButton.style.backgroundColor,
+            borderColor: submitButton.style.borderColor
+        }));
+
+        inputField.value = userAnswer;
+        inputField.disabled = true; // Disable input field
+        resultSpan.innerHTML = resultHTML;
+
+        updatePoints();
+        updateAnsweredCounter();
+    }
+
+    // Submit user progress
+    async function submitUserProgress(questionId, isCorrect) {
+        await fetch('/api/progress', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                questionId: questionId,
+                correct: isCorrect
+            })
+        });
+    }
+
+
+    // Update the button's state
+    function updateButtonState(button, text, color) {
+        button.innerText = text;
+        button.style.backgroundColor = color;
+        button.style.borderColor = color;
+    }
+
+    // Restore the button's state
+    function applyButtonState(questionId) {
+        const savedState = localStorage.getItem(`submit-button-${questionId}`);
+        if (savedState) {
+            const {text, backgroundColor, borderColor} = JSON.parse(savedState);
+            const button = document.getElementById(`submit-button-${questionId}`);
+            if (button) {
+                button.innerText = text;
+                button.style.backgroundColor = backgroundColor;
+                button.style.borderColor = borderColor;
+            }
+        }
+    }
+
+    // Show the solution modal
+    function showSolutionModal(solutionText) {
+        document.getElementById('solutionText').innerText = solutionText;
+        const solutionModal = new bootstrap.Modal(document.getElementById('solutionModal'));
+        solutionModal.show();
+    }
+
+    // Restore button states on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        questions.forEach(question => applyButtonState(question.id));
+    });
+
+
+    // Event listener for Next button
+    document.getElementById('next-button').addEventListener('click', () => {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            saveCurrentIndex(); // Save the new index
+            displayQuestion(currentQuestionIndex);
+        }
+    });
+
+    // Event listener for Previous button
+    document.getElementById('previous-button').addEventListener('click', () => {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            saveCurrentIndex(); // Save the new index
+            displayQuestion(currentQuestionIndex);
+        }
+    });
+
+    // Initialize questions on page load
+    loadQuestions(subtopic_id);
+
+    document.getElementById('card1').addEventListener('mousemove', function (event) {
+        const hoverInfo = document.getElementById('card5-hover-info');
+        hoverInfo.style.display = 'block';
+
+        // Get the mouse coordinates
+        const mouseX = event.pageX;
+        const mouseY = event.pageY;
+
+        // Set the position of the hover information relative to the pointer
+        const offsetX = 15; // Distance from the pointer (can be adjusted)
+        const offsetY = 15; // Distance from the pointer (can be adjusted)
+
+        hoverInfo.style.left = mouseX + offsetX + 'px';
+        hoverInfo.style.top = mouseY + offsetY + 'px';
+    });
+
+    document.getElementById('card1').addEventListener('mouseleave', function () {
+        const hoverInfo = document.getElementById('card5-hover-info');
+        hoverInfo.style.display = 'none';
+    });
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("miniPracticeForm");
+
+        if (form) {
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                localStorage.setItem("practiceStarted", "true");
+                localStorage.setItem("currentStep", "2");
+                // You can also show a confirmation message or highlight the answer
+            });
+        }
+
+        // Ensure step persists
+        if (localStorage.getItem("practiceStarted") === "true") {
+            localStorage.setItem("currentStep", "2");
+        }
+    });
+
+
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+
+
+
+
+

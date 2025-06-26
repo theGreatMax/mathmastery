@@ -1,0 +1,486 @@
+/*! HTML5 Boilerplate v9.0.1 | MIT License | https://html5boilerplate.com/ */
+
+/* main.css 3.0.0 | MIT License | https://github.com/h5bp/main.css#readme */
+/*
+ * What follows is the result of much research on cross-browser styling.
+ * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
+ * Kroc Camen, and the H5BP dev community and team.
+ */
+
+/* ==========================================================================
+   Base styles: opinionated defaults
+   ========================================================================== */
+
+html {
+  font-family: inter, serif;
+  color: #222;
+  font-size: 1em;
+  line-height: 1.4;
+  margin: 0;
+  scroll-behavior: smooth;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+
+/*
+ * Remove text-shadow in selection highlight:
+ * https://twitter.com/miketaylr/status/12228805301
+ *
+ * Customize the background color to match your design.
+ */
+
+::-moz-selection {
+  background: #8599be;
+  text-shadow: none;
+}
+
+::selection {
+  background: #b3d4fc;
+  text-shadow: none;
+}
+
+/*
+ * A better looking default horizontal rule
+ */
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
+}
+
+
+/* Styling for buttons */
+
+
+
+/* Hero Section (Example) */
+
+/* Add space below navbar */
+.content {
+  padding-top: 100px;
+}
+
+#logo img{
+  max-width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.3s ease-in;
+}
+
+#logo img:hover{
+  transform: rotate(-5deg) scale(1.1);
+}
+
+/* hero stying starts*/
+.hero-section {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-subtitle {
+  font-size: 14px;
+  margin-bottom: 0;
+  transform: translateY(-20px);
+  opacity: 0;
+  animation: slideIn 1s ease-out forwards 0.2s;
+}
+
+.hero-title {
+  margin-top: 0;
+  font-size: 4rem;
+  font-weight: bolder;
+  transform: translateY(-20px);
+  opacity: 0;
+  animation: slideIn 1s ease-out forwards 0.4s;
+}
+
+.hero-description {
+  color: #6c757d;
+  transform: translateY(-20px);
+  opacity: 0;
+  animation: slideIn 1s ease-out forwards 0.6s;
+}
+
+
+.hero-image {
+  max-width: 100%;
+  transform: scale(0.8);
+  opacity: 0;
+  animation: fadeZoom 1.5s ease-out forwards 0.8s;
+}
+
+@keyframes slideIn {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes buttonPop {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeZoom {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.about-us {
+  background-color: #f8f9fa;
+}
+
+.about-us img {
+  transition: transform 0.3s ease-in-out;
+}
+
+.about-us img:hover {
+  transform: scale(1.05);
+}
+
+.about-us .list-unstyled li {
+  margin-bottom: 10px;
+}
+
+
+
+
+@keyframes professionalFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.9); /* Slide in from above and slightly shrink */
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateY(-10px) scale(1.05); /* Slight overshoot for a bounce effect */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1); /* Final position */
+  }
+}
+
+/* Apply the animation to the Sign Up link */
+#header-signup {
+  display: inline-block;
+  font-size: 1rem;
+  color: #fff;
+  text-decoration: none;
+  background: var(--bs-secondary); /* Primary button color */
+  border-radius: 6px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  animation: professionalFadeIn 0.8s ease-out; /* Use the enhanced animation */
+}
+
+/* Hover effect for Sign Up */
+
+
+
+.feature-icon svg {
+  color: #4c75f2;
+  margin-bottom: 15px;
+}
+.feature-box {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+.feature-box:hover {
+  transform: translateY(-5px);
+}
+
+.hero1 {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#background, #background1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+
+.hero1 .text-overlay {
+  z-index: 2;
+  position: relative;
+  border-radius: 10px;
+}
+
+#footer-about-link{
+    pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .hero1 .text-overlay {
+    max-width: 90%;
+    padding: 15px; /* Adjust padding for smaller screens */
+  }
+
+  .card-title {
+    font-size: 1.2rem;
+  }
+
+  .card-body p {
+    font-size: 0.9rem;
+  }
+}
+
+
+  /*
+   * Remove the gap between audio, canvas, iframes,
+   * images, videos and the bottom of their containers:
+   * https://github.com/h5bp/html5-boilerplate/issues/440
+   */
+
+  audio,
+  canvas,
+  iframe,
+  img,
+  svg,
+  video {
+    vertical-align: middle;
+  }
+
+  /*
+   * Remove default fieldset styles.
+   */
+
+  fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  /*
+   * Allow only vertical resizing of textareas.
+   */
+
+  textarea {
+    resize: vertical;
+  }
+
+  /* ==========================================================================
+     Author's custom styles
+     ========================================================================== */
+
+  /* ==========================================================================
+     Helper classes
+     ========================================================================== */
+
+  /*
+   * Hide visually and from screen readers
+   */
+
+  .hidden,
+  [hidden] {
+    display: none !important;
+  }
+
+  /*
+   * Hide only visually, but have it available for screen readers:
+   * https://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+   *
+   * 1. For long content, line feeds are not interpreted as spaces and small width
+   *    causes content to wrap 1 word per line:
+   *    https://medium.com/@jessebeach/beware-smushed-off-screen-accessible-text-5952a4c2cbfe
+   */
+
+  .visually-hidden {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+    /* 1 */
+  }
+
+  /*
+   * Extends the .visually-hidden class to allow the element
+   * to be focusable when navigated to via the keyboard:
+   * https://www.drupal.org/node/897638
+   */
+
+  .visually-hidden.focusable:active,
+  .visually-hidden.focusable:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    white-space: inherit;
+    width: auto;
+  }
+
+  /*
+   * Hide visually and from screen readers, but maintain layout
+   */
+
+  .invisible {
+    visibility: hidden;
+  }
+
+  /*
+   * Clearfix: contain floats
+   *
+   * The use of `table` rather than `block` is only necessary if using
+   * `::before` to contain the top-margins of child elements.
+   */
+
+  .clearfix::before,
+  .clearfix::after {
+    content: "";
+    display: table;
+  }
+
+  .clearfix::after {
+    clear: both;
+  }
+
+  /* ==========================================================================
+     EXAMPLE Media Queries for Responsive Design.
+     These examples override the primary ('mobile first') styles.
+     Modify as content requires.
+     ========================================================================== */
+
+
+  @media (max-width: 748px) {
+
+    .hero-section img{
+      margin-top: 100px;
+    }
+
+
+    .navbar .container-fluid {
+      flex-direction: column !important; /* Ensure column layout */
+
+    }
+
+    .navbar-brand {
+      margin-bottom: 5px; /* Add spacing between logo and button on small screens */
+    }
+
+    .hero-section {
+      padding: 4px 8px;
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+    }
+
+    .container-fluid {
+      padding-top: 50px;
+    }
+
+    .extender{
+      display: none;
+    }
+
+
+  }
+
+
+  @media print,
+  (-webkit-min-device-pixel-ratio: 1.25),
+  (min-resolution: 1.25dppx),
+  (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+  }
+
+  /* ==========================================================================
+     Print styles.
+     Inlined to avoid the additional HTTP request:
+     https://www.phpied.com/delay-loading-your-print-css/
+     ========================================================================== */
+
+  @media print {
+    *,
+    *::before,
+    *::after {
+      background: #fdfdfd !important;
+      color: #000 !important;
+      /* Black prints faster */
+      box-shadow: none !important;
+      text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+      text-decoration: underline;
+    }
+
+    a[href]::after {
+      content: " (" attr(href) ")";
+    }
+
+    abbr[title]::after {
+      content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links that are fragment identifiers,
+     * or use the `javascript:` pseudo protocol
+     */
+    a[href^="#"]::after,
+    a[href^="javascript:"]::after {
+      content: "";
+    }
+
+    pre {
+      white-space: pre-wrap !important;
+    }
+
+    pre,
+    blockquote {
+      border: 1px solid #999;
+      page-break-inside: avoid;
+    }
+
+    tr,
+    img {
+      page-break-inside: avoid;
+    }
+
+    p,
+    h2,
+    h3 {
+      orphans: 3;
+      widows: 3;
+    }
+
+    h2,
+    h3 {
+      page-break-after: avoid;
+    }
+  }
+
+

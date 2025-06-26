@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+
+  <style>
+
+
+    h2{
+
+    }
+    .list-group {
+    max-width: 100%;
+    padding: 0;
+    list-style: none;
+
+  }
+
+  .list-group-item {
+    display: block;
+    background-color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #333;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .list-group-item:hover {
+    background-color: #007bff;
+    color: white;
+  }
+
+
+  @media (max-width: 600px){
+    .breadcrumb-item a {
+      font-size: 14px;
+
+    }
+    .breadcrumb-item.active{
+      font-size: 14px;
+    }
+
+
+    .container3{
+      margin-top: 50px;
+    }
+
+    .btn{
+      padding: 4px 12px;
+      font-size: 14px;
+    }
+
+  }
+
+
+
+
+  </style>
+</head>
+<body>
+
+
+
+<!-- Header  -->
+<header class="header">
+  <div class="sidebar-header2">
+    <i href="index.html" class="logo d-flex align-items-center ">
+      <img src="img/logo.png" alt="Logo" width="40" >
+      <h2 style=" font-size: 22px">Math Mastery</h2>
+    </i>
+  </div>
+  <i class="fas fa-bars menu-icon " type="button"
+     data-bs-toggle="offcanvas"
+     data-bs-target="#sidebar"
+     aria-controls="sidebar"></i>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+      <li class="breadcrumb-item "><a href="practice-mode">Practice mode</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Numbers</li>
+    </ol>
+  </nav>
+  <!-- Search bar -->
+  <div class="search-container">
+    <label>
+      <input type="text" class="search-input" placeholder="Search...">
+    </label>
+    <i class="fas fa-search search-icon"></i>
+  </div>
+  <i class="fas fa-user-circle account-icon" type="button" data-bs-toggle="offcanvas" data-bs-target="#accountManager" aria-controls="accountManager"></i>
+</header>
+
+
+<div class="container3">
+<!-- Practice Mode Section -->
+
+<!-- Back Button -->
+<div class="d-flex justify-content-start mb-3">
+  <button class="btn btn-outline-secondary" onclick="history.back()">
+    <i class="fas fa-arrow-left me-2"></i> Back
+  </button>
+</div>
+
+
+<!-- Practice Mode Section -->
+<section class="container">
+  <div class="row topic-header mb-4">
+    <div class="col">
+      <p class=" text-muted">Here is a list of all maths skills students learn in grade 10! These skills are organized into categories. Hover over any skill name to preview it, or click on a link to start practicing. Questions will increase in difficulty as you improve!</p>
+    </div>
+  </div>
+
+  <!-- Example Topic -->
+  <div class="row mb-4">
+    <div class="col">
+      <h2 class="text-primary">Numbers - Practice problems</h2>
+      <hr>
+      <div class="list-group">
+        <a href="Practice.html" class="list-group-item">1. Identify rational and irrational numbers</a>
+        <a href="Practice.html" class="list-group-item">2. Compare and order rational numbers</a>
+        <a href="Practice.html" class="list-group-item">3. Round decimals</a>
+        <a href="Practice.html" class="list-group-item">4. Square roots of perfect squares</a>
+        <a href="Practice.html" class="list-group-item">5. Estimate square roots</a>
+        <a href="Practice.html" class="list-group-item">6. Cube roots of perfect cubes</a>
+        <a href="Practice.html" class="list-group-item">7. Estimate cube roots</a>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+
+</body>
+</html>

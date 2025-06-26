@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="Student Dashboard for Math Mastery: Track progress, access resources, and manage assignments easily.">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--    <link th:href="@{/css/Dashboard/style.css}" rel="stylesheet">-->
+</head>
+
+<!-- Style-->
+<style>
+    :root {
+        --sidebar-expanded-width: 250px;
+        --sidebar-collapsed-width: 72px;
+        --background: #f8f9fa;
+        --primary: #007bff;
+        --secondary: #6c757d;
+        --white: #ffffff;
+        --progress-bg: #e9ecef;
+        --progress-gradient: linear-gradient(90deg, #007bff, #00d4ff);
+        --text-dark: #343a40;
+    }
+
+    /* Sidebar styles */
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: var(--sidebar-expanded-width);
+        color: white;
+        background: linear-gradient(135deg, #1a1c2e 0%, #16181f 100%);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        z-index: 1040;
+        border-bottom: 1px solid #343a40;
+    }
+
+    #sidebar.collapsed {
+        width: var(--sidebar-collapsed-width);
+    }
+
+    /* Sidebar Header */
+    .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 56px;
+        padding: 1rem 0.75rem 1rem 1rem;
+        border-bottom: 1px solid #2e2e3a;
+    }
+
+    .sidebar-header .logo-img {
+        width: 28px;
+        height: 28px;
+    }
+
+    .sidebar-header span {
+        font-size: 0.95rem;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        transition: opacity 0.3s ease;
+        background: linear-gradient(45deg, #6b8cff, #8b9fff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+
+    }
+
+    #sidebar.collapsed .sidebar-header span {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* Toggle Button */
+    #sidebarToggle {
+        background: transparent;
+        border: none;
+        padding: 0;
+        color: white;
+        font-size: 1rem;
+        transition: transform 0.3s ease;
+    }
+
+    #sidebarToggle :hover {
+        transform: scale(1.2);
+    }
+
+    #sidebar.collapsed .toggle-btn i {
+        transform: rotate(180deg);
+    }
+
+    /* Collapsed center align */
+    #sidebar.collapsed .sidebar-header {
+        justify-content: center;
+    }
+
+    #sidebar.collapsed .sidebar-header img {
+        margin: 0 auto;
+    }
+
+    /* Sidebar Links (for consistency) */
+    #sidebar nav a {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: #a0a3bd;
+        text-decoration: none;
+        transition: background-color 0.2s ease;
+    }
+
+    #sidebar nav a:hover {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(5px);
+    }
+
+    #sidebar nav a.active {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    #sidebar nav a i {
+        margin-right: 1rem;
+    }
+
+    #sidebar.collapsed nav a span {
+        display: none;
+    }
+
+    /* Topbar style */
+    #topbar {
+        position: sticky;
+        top: 0;
+        z-index: 1030; /* Bootstrap navbar default z-index to stay above other content */
+        margin-left: var(--sidebar-expanded-width);
+        transition: margin-left 0.3s ease;
+        height: 56px;
+        border-bottom: 1px solid #cdd6f3;
+    }
+
+    #mobileSearchModal .modal-content {
+        background-color: #f8f9fa;
+        border-radius: 0;
+    }
+
+    #mobileSearchModal input {
+        font-size: 1.25rem;
+    }
+
+
+    #sidebar.collapsed ~ #topbar {
+        margin-left: var(--sidebar-collapsed-width);
+    }
+
+    #breadcrumb li {
+        font-size: 12px;
+    }
+
+    #breadcrumb {
+        width: 90%;
+        margin-left: 260px;
+        padding-top: 5px;
+        transition: margin-left 0.3s ease;
+        position: fixed;
+        z-index: 1030;
+        backdrop-filter: blur(8px);
+        background-color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 10px;
+
+    }
+
+    .account-icon {
+        font-size: 30px;
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .account-icon:hover {
+        transform: scale(1.2);
+        color: var(--primary);
+    }
+
+    .offcanvas-header {
+        background-color: var(--primary);
+        color: white;
+        height: 56px;
+
+    }
+
+    /* Main content style */
+    #content {
+
+        margin-left: var(--sidebar-expanded-width);
+        padding: 1.5rem;
+        transition: margin-left 0.3s ease;
+    }
+
+    #sidebar.collapsed ~ #breadcrumb {
+        margin-left: 85px;
+    }
+
+    #sidebar.collapsed ~ #content {
+        margin-left: var(--sidebar-collapsed-width);
+    }
+
+
+    #study-tips, #Upcoming_meeting .card {
+        padding: 20px;
+        border-radius: 8px;
+        background-color: var(--white);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+    }
+
+    #study-tips, #Upcoming_meeting .card:hover {
+        transform: translateY(-8px);
+
+    }
+
+
+    /* Offcanvas */
+    .offcanvas {
+        width: 300px;
+    }
+
+    /** Gamified Step Tracker style **/
+    .steps {
+        min-height: 100px;
+    }
+
+    .step-circle {
+        width: 50px;
+        height: 50px;
+        line-height: 48px;
+        border-radius: 50%;
+        border: 2px solid #ccc;
+        background-color: #f8f9fa;
+        font-weight: bold;
+        color: #6c757d;
+        margin: 0 auto;
+        transition: all 0.3s ease;
+    }
+
+    .step-circle.active {
+        background-color: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+        transform: scale(1.1);
+        animation: pulse 1s infinite alternate;
+    }
+
+    .step-circle:hover {
+        transform: scale(1.15);
+        cursor: pointer;
+        border-color: #0d6efd;
+        color: #0d6efd;
+    }
+
+    .step-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #343a40;
+        transition: color 0.3s ease;
+    }
+
+    .step-item:hover .step-label {
+        color: #0d6efd;
+    }
+
+    .progress-bar-bg {
+        height: 4px;
+        background-color: #dee2e6;
+        z-index: 0;
+    }
+
+    .progress-bar-filled {
+        height: 4px;
+        background-color: #0d6efd;
+        z-index: 1;
+        transition: width 0.5s ease;
+    }
+
+    .step-circle.touched {
+        animation: bounce 0.15s ease;
+    }
+
+    /*Community questions container style*/
+    .questions-wrapper {
+        max-height: 400px; /* You can adjust this */
+        overflow-y: auto;
+        padding-right: 4px;
+    }
+
+    .questions-wrapper::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .questions-wrapper::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 3px;
+    }
+
+    /*Bounce animation for step tractor icons for all devices */
+    @keyframes bounce {
+        0% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    /*Pulse animation for step tractor icons for smartphones*/
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+        }
+        100% {
+            box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+        }
+    }
+
+    /*Style for small devices*/
+    @media (max-width: 768px) {
+
+        /*Sidebar style for smartphones*/
+        #sidebar {
+            position: fixed;
+            left: -100%;
+            width: 70%;
+            transition: left 0.3s ease;
+        }
+
+        #sidebar.show {
+            left: 0;
+        }
+
+        #sidebar.collapsed {
+            width: 70%;
+        }
+
+        #sidebar.collapsed nav a span {
+            display: flex;
+        }
+
+        /*Breadcrumb style for smartphones*/
+        #breadcrumb {
+            margin-left: 10px;
+        }
+
+        #sidebar.collapsed ~ #breadcrumb {
+            margin-left: 10px;
+        }
+
+        /*Main content style for smartphones*/
+        #topbar,
+        #content {
+            margin-left: 0 !important;
+        }
+
+        /*Step tracker style for smartphones*/
+        .step-tracker-modern .steps {
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .step-item {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .step-circle {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            margin: 0 auto 0.5rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            touch-action: manipulation;
+        }
+
+        .step-circle:active {
+            transform: scale(1.1);
+        }
+
+        .progress-bar-bg,
+        .progress-bar-filled {
+            display: none;
+        }
+
+        #step-status {
+            font-size: 1rem;
+            padding: 0 1rem;
+        }
+    }
+
+</style>
+
+<body>
+<!-- Sidebar -->
+<aside id="sidebar" aria-label="Sidebar Navigation">
+    <div class="sidebar-header mb-3">
+
+        <!--    Sidebar header-->
+        <a href="#" class="d-flex align-items-center text-white text-decoration-none w-100">
+            <img src="img/logo.png" alt="Logo" class="logo-img me-2"/>
+            <span class="sidebar-title">MathMastery</span>
+            <button class="btn btn-sm btn-outline-light border-0 d-none d-md-inline ms-auto" aria-label="Toggle sidebar"
+                    id="sidebarToggle">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="btn-close d-md-none ms-auto" id="sidebarClose" aria-label="Close sidebar"></button>
+        </a>
+
+        <!--   Sidebar navigation links-->
+    </div>
+    <nav role="navigation">
+        <a href="#" class="active"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
+        <a href=""><i class="fas fa-chart-line"></i><span>Progress</span></a>
+        <a th:href="@{/tutor-booking}"><i class="fas fa-solid fa-address-book"></i><span>Book A Tutor</span></a>
+        <a th:href="@{/practice-mode}"><i class="fas fa-book-open me-2"></i><span>Practice mode</span></a>
+        <a href="#"><i class="fas fa-clipboard-check"></i><span>Exam mode</span></a>
+        <a href="#"><i class="fas fa-folder "></i><span>Resources</span></a>
+    </nav>
+</aside>
+<!---------------------------------------------Sidebar ends------------------------------------------------------------->
+
+<!-- Topbar -->
+<nav id="topbar" class="navbar navbar-expand-md bg-white shadow-sm py-3">
+    <div class="container-fluid">
+
+        <!-- Sidebar toggle (only on mobile) -->
+        <button class="btn d-md-none" type="button" aria-label="Open sidebar" id="mobileSidebarOpen">
+            <i class="fas fa-bars fs-4"></i>
+        </button>
+
+        <!-- Logo name (only on mobile) -->
+        <a class="navbar-brand fw-bold text-primary ms-2 d-md-none" href="#">MathMastery</a>
+
+        <!-- Search Icon (Mobile Only) -->
+        <button class="btn d-md-none" data-bs-toggle="modal" data-bs-target="#mobileSearchModal"
+                aria-label="Open search">
+            <i class="fas fa-search fs-5"></i>
+        </button>
+
+        <!--Search bar (Desktop and tablets-->
+        <form class="d-none d-md-flex d-sm-none w-75" role="search">
+            <div class="input-group">
+                <input type="search" class="form-control" placeholder="Search..." aria-label="Search input"/>
+                <button class="btn btn-outline-secondary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+
+        <!-- User profile Icon -->
+        <i class="fas fa-user-circle account-icon" type="button" data-bs-toggle="offcanvas"
+           data-bs-target="#accountManager"
+           aria-controls="accountManager"></i>
+
+    </div>
+</nav>
+<!--------------------------------------------------Topbar ends------------------------------------------------------->
+
+<!--Breadcrumb -->
+<div id="breadcrumb">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Overview</li>
+        </ol>
+    </nav>
+</div>
+<!--------------------------------------------Breadcrumb ends---------------------------------------------------------->
+
+<!-- Main Content -->
+<main id="content" tabindex="-1">
+
+    <!-- Search bar for smartphones (toggled) -->
+    <div class="container-fluid px-3 d-md-none" id="mobileSearchBar" style="display: none;">
+        <form class="my-2" role="search">
+            <div class="input-group">
+                <input type="search" class="form-control" placeholder="Search..."/>
+                <button class="btn btn-outline-secondary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <!-------------------------------------  Search bar for smartphones ends---------------------------------------------->
+
+    <!-- Overview Section -->
+    <div id="overview-content" class="content-section">
+        <div
+                class="d-flex flex-column flex-md-row align-items-center justify-content-between w-100 py-4 px-3 mb-4 rounded shadow-sm"
+                style="background-color: #ffffff;">
+
+            <!-- Student Details -->
+            <div class="mb-3 mb-md-0">
+                <h1 class="fw-bold mb-2">Welcome, <span class="text-primary" th:text="${name}"></span></h1>
+                <p class="mb-1"><i class="fas fa-graduation-cap text-secondary me-2"></i><strong>Grade:</strong> <span
+                        th:text="${grade}"></span></p>
+                <p class="mb-1"><i class="fas fa-school text-secondary me-2"></i><strong>School:</strong> <span
+                        th:text="${school}"></span>
+                    School</p>
+            </div>
+
+            <!-- Recent Activity & Continue button -->
+            <div class="d-flex flex-column flex-md-row align-items-center gap-3">
+                <div class="text-center text-md-start">
+                    <h6 class="text-muted mb-1"><i class="fas fa-clock me-2"></i>Recent Activity</h6>
+                    <p class="mb-0 text-dark fw-semibold">Last studied: <span
+                            class="text-primary">Quadratic Equations</span></p>
+                </div>
+                <button class="btn btn-outline-primary btn-lg px-4 shadow-sm">
+                    <i class="fas fa-play me-2"></i>Continue
+                </button>
+            </div>
+        </div>
+    </div>
+    <!---------------------------------------------Overview ends --------------------------------------------------------->
+
+    <!-- Step Tracker hide after completion -->
+    <section class="step-tracker-modern container py-5">
+        <h2 class="text-center mb-5 fw-bold" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+            Your Learning Journey
+        </h2>
+
+        <div class="steps d-flex flex-wrap justify-content-between align-items-center position-relative">
+
+            <!-- Step Items -->
+            <div class="step-item text-center flex-fill position-relative mb-4">
+                <div class="step-circle active mb-2">1</div>
+                <div class="step-label">Complete Profile</div>
+            </div>
+
+            <!-- Step 2 - Dashboard -->
+            <div class="step-item text-center flex-fill position-relative mb-4">
+                <div class="step-circle mb-2">2</div>
+                <a href="/practice-mode" class="step-label start-practice-link">Start practicing</a>
+            </div>
+
+
+            <div class="step-item text-center flex-fill position-relative mb-4">
+                <div class="step-circle mb-2">3</div>
+                <div class="step-label">Book a tutor</div>
+            </div>
+
+            <div class="step-item text-center flex-fill position-relative mb-4">
+                <div class="step-circle mb-2">4</div>
+                <div class="step-label">Complete an exam</div>
+            </div>
+
+            <div class="step-item text-center flex-fill position-relative mb-4">
+                <div class="step-circle mb-2">5</div>
+                <div class="step-label">Rate us</div>
+            </div>
+
+            <!-- Progress Line Background -->
+            <div class="progress-bar-bg position-absolute top-50 start-0 end-0 translate-middle-y"></div>
+
+            <!-- Filled Progress Line -->
+            <div class="progress-bar-filled position-absolute top-50 start-0 translate-middle-y"
+                 style="width: 20%;"></div>
+        </div>
+
+        <div class="text-center mt-4 fw-semibold fs-5 text-primary" id="step-status">
+            Step 1 of 5: Complete your profile
+        </div>
+    </section>
+    <!--------------------------------------------Step tracker section ends----------------------------------------------->
+
+    <!--User progress overview section -->
+    <div class="row g-4 mt-3">
+
+        <!-- Overall Progress Card -->
+        <div class="col-md-4">
+            <div class="card shadow border-0 rounded-4 p-4 h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="fas fa-chart-line text-primary fs-2 me-3"></i>
+                    <h4 class="mb-0 fw-bold">Overall Progress</h4>
+                </div>
+                <div class="progress rounded-pill mb-2" style="height: 20px;">
+                    <div class="progress-bar bg-primary fw-semibold" style="width: 75%">75%</div>
+                </div>
+                <p class="text-muted mb-0">You're doing great—keep it up!</p>
+            </div>
+        </div>
+
+        <!-- Recent Exam Score -->
+        <div class="col-md-4">
+            <div class="card shadow border-0 rounded-4 p-4 position-relative h-100">
+
+                <div class="d-flex align-items-center mb-3">
+                    <i class="fas fa-clipboard-check text-danger fs-2 me-3"></i>
+                    <h4 class="mb-0 fw-bold">Recent Exam Score</h4>
+                </div>
+
+                <div class="progress rounded-pill mb-2" style="height: 20px;">
+                    <div class="progress-bar bg-danger fw-semibold" style="width: 40%">40%</div>
+                </div>
+                <ul class="list-unstyled">
+                    <li><strong>40%</strong> Completed</li>
+                    <li><strong>20</strong> Exercises Remaining</li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- Total time spent practicing -->
+        <div class="col-md-4">
+            <div class="card shadow border-0 rounded-4 p-4 h-100 d-flex flex-column justify-content-center text-center">
+                <i class="fas fa-stopwatch text-info fs-1 mb-3"></i>
+                <h5 class="fw-bold mb-1">Total time spent practicing </h5>
+                <p class="display-5 text-info fw-bold mb-0">12h 30m</p>
+            </div>
+        </div>
+    </div>
+    <!----------------------------------------User progress overview section ---------------------------------------------->
+
+    <!--User updates section-->
+    <section id="Upcoming_meeting" class="mt-5">
+        <div class="container">
+            <h2 class="fw-bold text-center mb-4">📅 Upcoming Tutorials</h2>
+
+            <div class="row g-4">
+                <!-- Confirmed booking card (remove at when the session begins -->
+                <div class="col-md-6">
+                    <div class="card shadow border-0 rounded-4">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="card-title fw-bold text-primary mb-1">Algebra - Quadratics</h5>
+                                    <p class="mb-1 text-muted">Tutor: <strong>Ms. Lebo Nkosi</strong></p>
+                                    <p class="mb-2 text-muted">
+                                        📅 <strong>June 24, 2025</strong><br/>
+                                        🕒 <strong>15:00 – 16:00</strong>
+                                    </p>
+                                </div>
+                                <span class="badge bg-success fs-6">Confirmed</span>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-outline-success btn-sm rounded-pill px-4" data-bs-toggle="modal"
+                                        data-bs-target="#contactTutorModal">
+                                    Contact Your Tutor
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending booking Card (remove right after confirmed) -->
+                <div class="col-md-6">
+                    <div class="card shadow border-0 rounded-4">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="card-title fw-bold text-primary mb-1">Geometry - Circles</h5>
+                                    <p class="mb-1 text-muted">Tutor: <strong>Mr. Themba Mokoena</strong></p>
+                                    <p class="mb-2 text-muted">
+                                        📅 <strong>June 26, 2025</strong><br/>
+                                        🕒 <strong>09:00 – 10:00</strong>
+                                    </p>
+                                </div>
+                                <span class="badge bg-warning text-dark fs-6">Pending</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!---------------------------------------------------  User updates sections ----------------------------------------->
+
+    <!-- Booking cta section  --->
+    <div class="card border-0 shadow-sm rounded-4 mt-5 p-4"
+         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+
+            <!-- Left Side: Icon + Text -->
+            <div class="d-flex align-items-center mb-4 mb-md-0">
+                <div class="me-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#ffffff"
+                         class="bi bi-person-lines-fill" viewBox="0 0 16 16">
+                        <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 1 0-6 3 3 0 0 1 0 6zM14 1.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5zM14 5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5zM14 8.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h4 class="fw-bold text-white mb-1">Book a Tutor at Your School</h4>
+                    <p class="text-white-50 mb-0" style="max-width: 400px;">
+                        Struggling with a topic? Connect with certified school tutors for one-on-one help tailored to
+                        your needs.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Side: Button -->
+            <!-- Trigger Button -->
+            <a th:href="@{/tutor-booking}" class="btn btn-light text-dark fw-semibold px-4 py-2 rounded-pill shadow-sm" >
+                Book Now
+            </a>
+
+        </div>
+    </div>
+    <!----------------------------------------------------Booing cta section ends------------------------------------------>
+
+    <!-- Tips section  --->
+    <section id="study-tips" class="py-5 ">
+        <div class="container">
+            <h2 class="text-center fw-bold">How to Study Math</h2>
+            <p class="text-center text-muted">Here are some tips on how to master mathematics. Master math with these
+                expert-backed strategies and study techniques.</p>
+
+            <div class="row">
+                <!-- Tip 1 -->
+                <div class="col-md-4" data-aos="fade-up">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2920/2920253.png" alt="Practice Icon"
+                                 class="mb-3"
+                                 width="60">
+                            <h5 class="fw-bold">1. Practice Consistently</h5>
+                            <p>Mathematics is a skill. The more you practice, the better you become. Set aside dedicated
+                                time each day
+                                for solving problems.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tip 2 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2337/2337879.png" alt="Understand Icon"
+                                 class="mb-3"
+                                 width="60">
+                            <h5 class="fw-bold">2. Focus on Understanding</h5>
+                            <p>Don’t just memorize formulas—understand how they work. Break down complex problems step
+                                by step for
+                                deeper comprehension.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tip 3 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3451/3451273.png" alt="Ask Questions Icon"
+                                 class="mb-3"
+                                 width="60">
+                            <h5 class="fw-bold">3. Ask Questions</h5>
+                            <p>If you're stuck, seek help from teachers, classmates, or online resources. Never move on
+                                without
+                                understanding a concept.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <!-- Tip 4 -->
+                <div class="col-md-4" data-aos="fade-up">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Real-world Icon"
+                                 class="mb-3"
+                                 width="60">
+                            <h5 class="fw-bold">4. Relate Math to Real Life</h5>
+                            <p>Apply math to real-world problems. This helps improve retention and makes abstract
+                                concepts more
+                                tangible.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tip 5 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/6334/6334176.png"
+                                 alt="Active Learning Icon" class="mb-3"
+                                 width="60">
+                            <h5 class="fw-bold">5. Use Active Learning Techniques</h5>
+                            <p>Teach concepts to others, use flashcards, and take notes actively. The more engaged you
+                                are, the better
+                                you learn.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tip 6 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1633/1633681.png" alt="Test Yourself Icon"
+                                 class="mb-3"
+                                 width="60">
+                            <h5 class="fw-bold">6. Test Yourself Regularly</h5>
+                            <p>Take quizzes and timed tests to identify weak areas and reinforce learning. Self-testing
+                                is a powerful
+                                way to improve recall.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="text-center mt-5">
+                <h4 class="fw-bold">Put These Tips into Practice!</h4>
+                <p>Start improving your math skills today with our interactive quizzes and study resources.</p>
+            </div>
+        </div>
+    </section>
+    <!------------------------------------------------- Tips section ends ------------------------------------------------>
+
+    <!-- Community section-->
+    <section id="discussion-board" class="py-5 ">
+        <div class="container">
+            <h2 class="text-center fw-bold mb-4">Community Questions & Discussions</h2>
+
+            <!-- Post Question Form -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="questionTitle" class="form-label">Your Question</label>
+                            <input type="text" class="form-control" id="questionTitle"
+                                   placeholder="E.g. How to solve quadratic equations?">
+                        </div>
+                        <div class="mb-3">
+                            <label for="questionDetails" class="form-label">Details</label>
+                            <textarea class="form-control" id="questionDetails" rows="3"
+                                      placeholder="Explain what you're struggling with..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Post Question</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Questions Container -->
+            <div class="questions-wrapper card shadow-sm mb-3">
+                <div class="card-body questions-scroll">
+                    <h5 class="card-title">How to factorize x² + 5x + 6?</h5>
+                    <p class="card-text text-muted">Asked by <strong>Student123</strong> · 2 hours ago</p>
+
+                    <!-- Replies -->
+                    <div class="ms-4 mt-3 border-start ps-3">
+                        <p><strong>Mr. MathTutor:</strong> Break it into (x + 2)(x + 3)...</p>
+                        <p><strong>Teacher_L:</strong> Try drawing a parabola...</p>
+                    </div>
+
+                    <!-- Reply Form -->
+                    <form class="mt-3">
+                        <div class="mb-2">
+                            <input type="text" class="form-control" placeholder="Write a reply...">
+                        </div>
+                        <button class="btn btn-sm btn-outline-secondary">Reply</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Quick Links -->
+    <section class="mb-4" style="margin-top: 100px">
+        <h2 class="mb-3 text-center">Quick Links</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center shadow-sm border-0">
+                    <div class="card-body">
+                        <i class="fas fa-book-open text-primary mb-3" style="font-size: 2.5rem;"></i>
+                        <h5 class="card-title">Practice Mode</h5>
+                        <p class="card-text text-muted">Improve your skills with guided practice sessions tailored to
+                            your learning progress.</p>
+                        <a href="#practice" class="btn btn-outline-primary">Go to Practice Mode</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center shadow-sm border-0">
+                    <div class="card-body">
+                        <i class="fas fa-clipboard-check text-danger mb-3" style="font-size: 2.5rem;"></i>
+                        <h5 class="card-title">Exam Mode</h5>
+                        <p class="card-text text-muted">Test your knowledge under timed conditions to simulate real exam
+                            scenarios.</p>
+                        <a href="#exam" class="btn btn-outline-danger">Go to Exam Mode</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center shadow-sm border-0">
+                    <div class="card-body">
+                        <i class="fas fa-folder text-success mb-3" style="font-size: 2.5rem;"></i>
+                        <h5 class="card-title">Resources</h5>
+                        <p class="card-text text-muted">Access a library of past papers, study guides, and additional
+                            materials.</p>
+                        <a href="#resources" class="btn btn-outline-success">Go to Resources</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!----------------------------------------------- Community section ends ---------------------------------------------->
+
+    <!-- Footer Section -->
+    <footer class="mt-5 py-3 text-center bg-light">
+        <p class="mb-0">&copy; 2025 Math Mastery. All Rights Reserved.</p>
+        <a href="#contact" class="text-muted me-3">Contact</a>
+        <a href="#support" class="text-muted me-3">Support</a>
+        <a href="#privacy" class="text-muted">Privacy Policy</a>
+    </footer>
+    <!---------------------------------------------  Footer section ends -------------------------------------------------->
+
+    <!-------------------------------------------  Modals and offcanvas --------------------------------------------------->
+    <!--------------------------------------------------------------------------------------------------------------------->
+
+    <!--Search modal-->
+    <div class="modal fade" id="mobileSearchModal" tabindex="-1" aria-labelledby="mobileSearchModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen-sm-down">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <input type="search" class="form-control form-control-lg" placeholder="Search..." autofocus/>
+                    <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Optional: search suggestions or history -->
+                    <p class="text-muted text-center">Start typing to search...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!------------------------------------------------Search modal ends --------------------------------------------------->
+
+    <!-- Account Manager Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="accountManager" aria-labelledby="accountManagerLabel"
+         style="background-color: var(--background);">
+        <div class="offcanvas-header" style="border-bottom: 1px solid var(--primary);">
+            <h5 class="offcanvas-title" id="accountManagerOffcanvasLabel" style="font-size: 1.5rem; font-weight: bold;">
+                Account Manager</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"
+                    style="background-color: var(--secondary);">
+            </button>
+
+        </div>
+        <div class="offcanvas-body">
+
+            <form action="/update-profile" method="post">
+                <!-- Full Name (Read-only) -->
+                <div class="mb-3">
+                    <label for="fullName" class="form-label" style="font-weight: bold;">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" class="form-control" th:value="${name}" readonly
+                           style="background-color: #e9ecef;">
+                </div>
+
+                <!-- Email (Editable) -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            th:value="${user.email}"
+                            th:readonly="${user.pendingEmail != null}"
+                            class="form-control"
+                            required
+                    >
+
+                </div>
+
+                <div id="resendSection" class="mt-2 d-none">
+                    <small id="small" th:if="${user.pendingEmail != null}" class="text-danger">
+                        Email change pending verification. Please check your email.
+                    </small>
+
+                    <div class="d-flex gap-2 mt-2">
+                        <div th:if="${user.pendingEmail != null}" class="mt-2">
+                            <button id="resendButton" type="button" class="btn btn-warning btn-sm"
+                                    onclick="resendVerificationEmail()"
+                                    style="background-color: var(--bs-warning); border: none;">
+                                Resend Verification Email
+                            </button>
+                        </div>
+                        <button id="cancelEmailChangeButton" type="button" class="btn btn-sm btn-danger">Cancel</button>
+                    </div>
+                </div>
+
+
+                <!-- School (Editable) -->
+
+                <div class=" mb-3">
+                    <label for="school" class="form-label" style="font-weight: bold;">School</label>
+                    <input type="text" id="school" name="school" class="form-control" th:value="${school}" required>
+                    <datalist id="schools">
+                        <option value="Pretoria High School for Girls">
+                        <option value="Parktown Boys' High School">
+                        <option value="St. John's College">
+                        <option value="King Edward VII School">
+                        <option value="Redhill School">
+                        <option value="St. Mary's School">
+                        <option value="Clifton College">
+                        <option value="Maritzburg College">
+                        <option value="Grey College">
+                        <option value="Afrikaanse Hoër Seunskool">
+                    </datalist>
+                </div>
+
+                <!-- Grade (Editable) -->
+                <div class="mb-3">
+                    <label for="grade" class="form-label" style="font-weight: bold;">Grade</label>
+                    <select id="grade" name="grade" class="form-select" required>
+                        <option th:selected="${grade == 10}" value="10">Grade 10</option>
+                        <option th:selected="${grade == 11}" value="11">Grade 11</option>
+                        <option th:selected="${grade == 12}" value="12">Grade 12</option>
+                    </select>
+                </div>
+
+                <!-- CHANGE PASSWORD LINK -->
+                <div class="mb-3 text-center">
+                    <a href="#changePasswordOffcanvas" data-bs-toggle="offcanvas" role="button"
+                       style="font-size: 1rem; color: var(--primary); text-decoration: underline;">Change Password</a>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary"
+                            style="background-color: var(--primary); width: 100%; padding: 6px; font-size: 1.1rem; border: none;">
+                        Save Changes
+                    </button>
+                </div>
+
+                <form action="/logout" method="post">
+                    <div class="text-center mt-4">
+                        <button id="logoutButton" class="btn btn-outline-primary w-100"
+                        >
+                            Log Out
+                        </button>
+                    </div>
+                </form>
+
+            </form>
+        </div>
+    </div>
+    <!-----------------------------------------Account manager offcanvas ends ------------------------------------------>
+
+    <!-- Change Password Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="changePasswordOffcanvas"
+         aria-labelledby="changePasswordOffcanvasLabel" style="background-color: var(--background);">
+        <div class="offcanvas-header" style="border-bottom: 1px solid var(--progress-bg);">
+            <h5 class="offcanvas-title" id="changePasswordOffcanvasLabel"
+                style="font-size: 1.5rem; color: black; font-weight: bold;">Change Password</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <!-- BACK BUTTON -->
+            <div class="mb-4">
+                <button type="button" class="btn btn-secondary"
+                        style="background-color: var(--secondary); border: none;" data-bs-toggle="offcanvas"
+                        data-bs-target="#profileOffcanvas">
+                    ← Back
+                </button>
+            </div>
+
+            <form action="/update-password" method="post">
+                <!-- Current Password -->
+                <div class="mb-3">
+                    <label for="currentPassword" class="form-label" style="font-weight: bold;">Current Password</label>
+                    <input type="password" id="currentPassword" name="currentPassword" class="form-control" required>
+                </div>
+
+                <!-- New Password -->
+                <div class="mb-3">
+                    <label for="newPassword" class="form-label" style="font-weight: bold;">New Password</label>
+                    <input type="password" id="newPassword" name="newPassword" class="form-control" required>
+                </div>
+
+                <!-- Confirm New Password -->
+                <div class="mb-3">
+                    <label for="confirmNewPassword" class="form-label" style="font-weight: bold;">Confirm New
+                        Password</label>
+                    <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="form-control"
+                           required>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary"
+                            style="background-color: var(--primary); width: 100%; padding: 10px; font-size: 1.1rem; border: none;">
+                        Change Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!------------------------------------------Change password offcanvas ends------------------------------------------------->
+
+    <!-- Toast Container -->
+    <div id="toast-container" aria-live="polite" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;"></div>
+    <!--------------------------------------Toast Container ends---------------------------------------------------------->
+
+    <!--Update grade Modal -->
+    <div class="modal fade" id="updateGradeModal" tabindex="-1" aria-labelledby="updateGradeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <form th:action="@{/profile/update-grade}" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateGradeModalLabel">Update Grade</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="gradeSelect" class="form-label">Select your new grade:</label>
+                        <select class="form-select" id="gradeSelect" name="grade" required>
+                            <option value="">-- Select Grade --</option>
+                            <option value="10">Grade 10</option>
+                            <option value="11">Grade 11</option>
+                            <option value="12">Grade 12</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-------------------------------------------------------Update grade modal ends-------------------------------------->
+
+    <!--Tutor contact modal-->
+    <div class="modal fade" id="contactTutorModal" tabindex="-1" aria-labelledby="contactTutorModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 shadow-sm border-0">
+                <div class="modal-header bg-primary text-white rounded-top-4">
+                    <h5 class="modal-title" id="contactTutorModalLabel">Tutor Contact Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-phone-alt text-success me-3 fs-5"></i>
+                            <span>+27 81 234 5678</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fab fa-whatsapp text-success me-3 fs-5"></i>
+                            <a href="https://wa.me/27812345678" target="_blank" class="text-decoration-none">Message on
+                                WhatsApp</a>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-envelope text-success me-3 fs-5"></i>
+                            <a href="mailto:tutor@example.com" class="text-decoration-none">tutor@example.com</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!----------------------------------------- Tutor contact modal ends ---------------------------------------------------->
+</main>
+
+<script>
+
+    // Update user profile functionality
+    document.addEventListener('DOMContentLoaded', () => {
+        loadAccountInfo();
+        setupLogout();
+        initResendCountdown();
+        setupResendButton();
+    });
+
+    // Load User details
+    async function loadAccountInfo() {
+        try {
+            const res = await fetch('/api/update-profile');
+            if (!res.ok) throw new Error('Network response was not ok');
+            const data = await res.json();
+            document.getElementById('studentName').innerText = data.name || '';
+            document.getElementById('fullName').value = data.name || '';
+            document.getElementById('email').value = data.email || '';
+
+            if (data.pendingEmail) {
+                document.getElementById('pendingEmailNote')?.classList.remove('d-none');
+                document.getElementById('resendSection')?.classList.remove('d-none');
+            }
+        } catch (err) {
+            console.error('Failed to load account info:', err);
+            showToast('Failed to load account info.', false);
+        }
+    }
+
+    // log out functionality
+    function setupLogout() {
+        document.getElementById('logoutButton')?.addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/logout', {method: 'POST'});
+                if (res.ok) {
+                    window.location.href = '/login';
+                } else {
+                    showToast('Logout failed.', false);
+                }
+            } catch (err) {
+                console.error('Logout error:', err);
+                showToast('Logout failed.', false);
+            }
+        });
+    }
+
+    //  Count down functionality
+    async function initResendCountdown() {
+        try {
+            const res = await fetch('/resend-cooldown');
+            if (!res.ok) throw new Error('Network response was not ok');
+            const data = await res.json();
+            const button = document.getElementById('resendButton');
+            if (data.secondsRemaining > 0 && button) {
+                startResendCountdown(button, data.secondsRemaining);
+            }
+        } catch (err) {
+            console.error('Failed to fetch resend cooldown:', err);
+        }
+    }
+
+    // resend button functionality
+    function setupResendButton() {
+        const resendButton = document.getElementById('resendButton');
+        if (resendButton) {
+            resendButton.addEventListener('click', resendVerificationEmail);
+        }
+    }
+
+    // resend verification functionality
+    async function resendVerificationEmail() {
+        const button = document.getElementById('resendButton');
+        try {
+            const res = await fetch('/resend-verification', {method: 'POST'});
+            if (res.ok) {
+                showToast('Verification email resent successfully!', true);
+                startResendCountdown(button);
+            } else {
+                let msg = 'Failed to resend verification email.';
+                try {
+                    const data = await res.json();
+                    msg = data.message || msg;
+                } catch (_) {
+                    msg = await res.text() || msg;
+                }
+                showToast(msg, false);
+
+            }
+        } catch (err) {
+            console.error('Error resending verification email:', err);
+            showToast('An error occurred.', false);
+        }
+    }
+
+    // start count down
+    let resendIntervalId = null;
+
+    function startResendCountdown(button, seconds = 60) {
+        if (!button) return;
+        if (resendIntervalId) clearInterval(resendIntervalId);
+
+        button.disabled = true;
+        let secs = seconds;
+        button.textContent = `Resend in ${secs}s`;
+
+        resendIntervalId = setInterval(() => {
+            secs--;
+            if (secs <= 0) {
+                clearInterval(resendIntervalId);
+                resendIntervalId = null;
+                button.disabled = false;
+                button.textContent = 'Resend Verification Email';
+            } else {
+                button.textContent = `Resend in ${secs}s`;
+            }
+        }, 1000);
+    }
+
+    // This flag is passed from the server
+    const emailChangeRequested = /*[[${emailChangeRequested}]]*/ false;
+
+    // send verification email
+    if (emailChangeRequested === true) {
+        showToast('Verification email sent to your new email address. Please check your inbox.', true);
+    }
+
+    // Toast functionality
+    function showToast(message, isSuccess = true) {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toastEl = document.createElement('div');
+        toastEl.className = 'toast align-items-center text-white mb-2';
+        toastEl.classList.add(isSuccess ? 'bg-success' : 'bg-danger');
+        toastEl.setAttribute('role', 'alert');
+        toastEl.setAttribute('aria-live', 'assertive');
+        toastEl.setAttribute('aria-atomic', 'true');
+        toastEl.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body">${message}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>`;
+
+        container.appendChild(toastEl);
+        const toast = new bootstrap.Toast(toastEl, {delay: 5000});
+        toast.show();
+
+        toastEl.addEventListener('hidden.bs.toast', () => {
+            toastEl.remove();
+        });
+    }
+
+    // cancel email update
+    async function cancelEmailChange() {
+        try {
+            const res = await fetch('/cancel-email-change', {method: 'POST'});
+            if (res.ok) {
+                showToast('Email change canceled.', true);
+                document.getElementById('resendSection')?.classList.add('d-none');
+                document.getElementById('pendingEmailNote')?.classList.add('d-none');
+            } else {
+                const msg = await res.text();
+                showToast(msg || 'Failed to cancel email change.', false);
+            }
+        } catch (err) {
+            console.error('Error canceling email change:', err);
+            showToast('An error occurred.', false);
+        }
+    }
+
+    <!-- Sidebar functionality -->
+    document.addEventListener("DOMContentLoaded", () => {
+        const sidebar = document.getElementById("sidebar");
+        const toggleBtn = document.getElementById("sidebarToggle");
+        const mobileOpenBtn = document.getElementById("mobileSidebarOpen");
+        const sidebarCloseBtn = document.getElementById("sidebarClose");
+
+        // Restore sidebar state
+        const savedState = localStorage.getItem("sidebarState");
+        if (savedState === "collapsed") {
+            sidebar.classList.add("collapsed");
+            toggleBtn?.querySelector("i").classList.remove("fa-chevron-left");
+            toggleBtn?.querySelector("i").classList.add("fa-chevron-right");
+        }
+
+
+        // Toggle sidebar (desktop)
+        toggleBtn?.addEventListener("click", () => {
+
+            const scrollY = window.scrollY; // Save current scroll position
+
+            sidebar.classList.toggle("collapsed");
+            localStorage.setItem(
+                window.location.pathname + '-sidebarState',
+                sidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded'
+            );
+
+            setTimeout(() => {
+                window.scrollTo({top: scrollY}); // Restore scroll position after transition
+            });
+
+            const icon = toggleBtn.querySelector("i");
+            icon.classList.toggle("fa-chevron-left");
+            icon.classList.toggle("fa-chevron-right");
+
+            localStorage.setItem("sidebarState", sidebar.classList.contains("collapsed") ? "collapsed" : "expanded");
+        });
+
+        // Open sidebar (mobile)
+        mobileOpenBtn?.addEventListener("click", () => {
+            sidebar.classList.add("show");
+        });
+
+        // Close sidebar (mobile)
+        sidebarCloseBtn?.addEventListener("click", () => {
+            sidebar.classList.remove("show");
+        });
+
+        // Click outside to close (mobile)
+        document.addEventListener("click", (e) => {
+            if (window.innerWidth <= 768 &&
+                !sidebar.contains(e.target) &&
+                !mobileOpenBtn.contains(e.target)) {
+                sidebar.classList.remove("show");
+            }
+        });
+
+
+    });
+
+    // Mobile search bar toggle
+    document.addEventListener("DOMContentLoaded", () => {
+        const mobileSearchToggle = document.getElementById("mobileSearchToggle");
+        const mobileSearchBar = document.getElementById("mobileSearchBar");
+
+        mobileSearchToggle?.addEventListener("click", () => {
+            mobileSearchBar.style.display =
+                mobileSearchBar.style.display === "none" ? "block" : "none";
+        });
+    });
+
+    // Step Tracker functionality
+    document.addEventListener("DOMContentLoaded", function () {
+        const stepCircles = document.querySelectorAll(".step-circle");
+        const statusText = document.getElementById("step-status");
+        const progressFilled = document.querySelector(".progress-bar-filled");
+        const totalSteps = stepCircles.length;
+
+        let currentStep = parseInt(localStorage.getItem("currentStep")) || 1;
+        updateStepTracker(currentStep);
+
+        function updateStepTracker(step) {
+            stepCircles.forEach((circle, i) => {
+                circle.classList.toggle("active", i < step);
+            });
+
+            const progressPercent = (step / totalSteps) * 100;
+            progressFilled.style.width = progressPercent + "%";
+
+            const stepLabel = stepCircles[step - 1]?.parentElement.querySelector(".step-label").innerText || "Completed";
+            statusText.textContent = `Step ${step} of ${totalSteps}: ${stepLabel}`;
+
+            localStorage.setItem("currentStep", step);
+        }
+
+        // Auto-update if already started practice
+        if (localStorage.getItem("practiceStarted") === "true" && currentStep < 2) {
+            currentStep = 2;
+            updateStepTracker(currentStep);
+        }
+
+        // ✅ Intercept 'Start practicing' click to set flag
+        const practiceLink = document.querySelector(".start-practice-link");
+        if (practiceLink) {
+            practiceLink.addEventListener("click", () => {
+                localStorage.setItem("practiceStarted", "true");
+                localStorage.setItem("currentStep", "2");
+            });
+        }
+    });
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+

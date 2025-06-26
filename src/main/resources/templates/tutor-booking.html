@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Math Mastery - Dashboard</title>
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="img/logo.png" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/logo.png">
+
+    <!-- Bootstrap, Font Awesome and AOS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
+    <!-- Style-->
+    <style>
+        :root {
+            --sidebar-expanded-width: 250px;
+            --sidebar-collapsed-width: 72px;
+            --background: #f8f9fa;
+            --primary: #007bff;
+            --secondary: #6c757d;
+            --white: #ffffff;
+            --progress-bg: #e9ecef;
+            --progress-gradient: linear-gradient(90deg, #007bff, #00d4ff);
+            --text-dark: #343a40;
+        }
+
+        /* Sidebar styles */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-expanded-width);
+            color: white;
+            background: linear-gradient(135deg, #1a1c2e 0%, #16181f 100%);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            z-index: 1040;
+            border-bottom: 1px solid #343a40;
+        }
+
+        #sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        /* Sidebar Header */
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 1rem 0.75rem 1rem 1rem;
+            border-bottom: 1px solid #2e2e3a;
+        }
+
+        .sidebar-header .logo-img {
+            width: 28px;
+            height: 28px;
+        }
+
+        .sidebar-header span {
+            font-size: 0.95rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            transition: opacity 0.3s ease;
+            background: linear-gradient(45deg, #6b8cff, #8b9fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+        }
+
+        #sidebar.collapsed .sidebar-header span {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Toggle Button */
+        #sidebarToggle {
+            background: transparent;
+            border: none;
+            padding: 0;
+            color: white;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        #sidebarToggle :hover {
+            transform: scale(1.2);
+        }
+
+        #sidebar.collapsed .toggle-btn i {
+            transform: rotate(180deg);
+        }
+
+        /* Collapsed center align */
+        #sidebar.collapsed .sidebar-header {
+            justify-content: center;
+        }
+
+        #sidebar.collapsed .sidebar-header img {
+            margin: 0 auto;
+        }
+
+        /* Sidebar Links (for consistency) */
+        #sidebar nav a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #a0a3bd;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+        }
+
+        #sidebar nav a:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        #sidebar nav a.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        #sidebar nav a i {
+            margin-right: 1rem;
+        }
+
+        #sidebar.collapsed nav a span {
+            display: none;
+        }
+
+        /* Topbar style */
+        #topbar {
+            position: sticky;
+            top: 0;
+            z-index: 1030; /* Bootstrap navbar default z-index to stay above other content */
+            margin-left: var(--sidebar-expanded-width);
+            transition: margin-left 0.3s ease;
+            height: 56px;
+            border-bottom: 1px solid #cdd6f3;
+        }
+
+
+        #sidebar.collapsed ~ #topbar {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+
+        #breadcrumb li {
+            font-size: 12px;
+        }
+
+        #breadcrumb {
+            width: 90%;
+            margin-left: 260px;
+            padding-top: 5px;
+            transition: margin-left 0.3s ease;
+            position: fixed;
+            z-index: 1030;
+            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+
+        }
+
+        .account-icon {
+            font-size: 30px;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .account-icon:hover {
+            transform: scale(1.2);
+            color: var(--primary);
+        }
+
+        .offcanvas-header {
+            background-color: var(--primary);
+            color: white;
+            height: 56px;
+
+        }
+
+        /* Main content style */
+        #content {
+
+            margin-left: var(--sidebar-expanded-width);
+            padding: 1.5rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        #sidebar.collapsed ~ #breadcrumb {
+            margin-left: 85px;
+        }
+
+        #sidebar.collapsed ~ #content {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+
+
+        /* Offcanvas */
+        .offcanvas {
+            width: 300px;
+        }
+
+        /*Tutor booking style*/
+        .tutor-card {
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .tutor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .text-center.py-5 {
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /*Booking card style*/
+
+        .tutor-card {
+            background: white;
+            border: 1px solid #e3e6f0;
+            border-radius: 1rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .tutor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-btn {
+            background: linear-gradient(to right, #4e73df, #224abe);
+            border: none;
+            color: white;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: background 0.3s ease;
+        }
+
+        .book-btn:hover {
+            background: linear-gradient(to right, #224abe, #1b3fa0);
+        }
+
+        .card {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 576px) {
+            .card-body {
+                text-align: center;
+            }
+        }
+
+
+        /*Style for small devices*/
+        @media (max-width: 768px) {
+
+            /*Sidebar style for smartphones*/
+            #sidebar {
+                position: fixed;
+                left: -100%;
+                width: 70%;
+                transition: left 0.3s ease;
+            }
+
+            #sidebar.show {
+                left: 0;
+            }
+
+            #sidebar.collapsed {
+                width: 70%;
+            }
+
+            #sidebar.collapsed nav a span {
+                display: flex;
+            }
+
+            /*Breadcrumb style for smartphones*/
+            #breadcrumb {
+                margin-left: 10px;
+            }
+
+            #sidebar.collapsed ~ #breadcrumb {
+                margin-left: 10px;
+            }
+
+            /*Main content style for smartphones*/
+            #topbar,
+            #content {
+                margin-left: 0 !important;
+            }
+
+
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside id="sidebar" aria-label="Sidebar Navigation">
+    <div class="sidebar-header mb-3">
+
+        <!--    Sidebar header-->
+        <a href="#" class="d-flex align-items-center text-white text-decoration-none w-100">
+            <img src="img/logo.png" alt="Logo" class="logo-img me-2"/>
+            <span class="sidebar-title">MathMastery</span>
+            <button class="btn btn-sm btn-outline-light border-0 d-none d-md-inline ms-auto" aria-label="Toggle sidebar"
+                    id="sidebarToggle">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="btn-close d-md-none ms-auto" id="sidebarClose" aria-label="Close sidebar"></button>
+        </a>
+
+        <!--   Sidebar navigation links-->
+    </div>
+    <nav role="navigation">
+        <a href="#" class="active"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="#"><i class="fas fa-calendar-alt"></i><span>My Sessions</span></a>
+        <a href="#"><i class="fas fa-user-plus"></i><span>Student Requests</span></a>
+        <a href="#"><i class="fas fa-clock"></i><span>Availability</span></a>
+        <a href="#"><i class="fas fa-envelope"></i><span>Messages</span></a>
+        <a href="#"><i class="fas fa-chart-line"></i><span>Student Progress</span></a>
+    </nav>
+
+</aside>
+<!---------------------------------------------Sidebar ends------------------------------------------------------------->
+
+<!-- Topbar -->
+<nav id="topbar" class="navbar navbar-expand-md bg-white shadow-sm py-3">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+
+        <!-- Left: Sidebar toggle and logo -->
+        <div class="d-flex align-items-center">
+            <!-- Sidebar toggle (only on mobile) -->
+            <button class="btn d-md-none me-2" type="button" aria-label="Open sidebar" id="mobileSidebarOpen">
+                <i class="fas fa-bars fs-4"></i>
+            </button>
+
+            <!-- Logo name (only on mobile) -->
+            <a class="navbar-brand fw-bold text-primary d-md-none" href="#">MathMastery</a>
+        </div>
+
+        <!-- Right: User profile icon -->
+        <i class="fas fa-user-circle account-icon fs-4" type="button"
+           data-bs-toggle="offcanvas" data-bs-target="#accountManager"
+           aria-controls="accountManager"></i>
+
+    </div>
+</nav>
+
+<!--------------------------------------------------Topbar ends------------------------------------------------------->
+
+<!--Breadcrumb -->
+<div id="breadcrumb">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Overview</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Tutor Booking</li>
+        </ol>
+    </nav>
+</div>
+<!--------------------------------------------Breadcrumb ends---------------------------------------------------------->
+
+<!-- Main content -->
+<main id="content" tabindex="-1">
+
+    <!--   Hidden Student ID  -->
+    <input type="hidden" id="student_id" th:value="${studentID}">
+
+
+    <!--  Available tutors section -->
+    <div class="container py-5">
+        <h2 class="mb-4 text-center">
+            <i class="fas fa-chalkboard-teacher text-primary me-2"></i>Available Tutors
+        </h2>
+
+        <div class="row">
+
+            <div th:if="${#lists.isEmpty(tutors)}" class="text-center py-5">
+                <i class="fas fa-user-times fa-3x text-secondary mb-3"></i>
+                <h4>No tutors are currently available.</h4>
+                <p class="text-muted">Please check again later or contact your school admin.</p>
+            </div>
+
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                <div class="col" th:each="tutor : ${tutors}"
+                     th:if="${tutor.bookingStatus == null or tutor.bookingStatus == 'PENDING'}">
+                    <div class="card h-100 shadow-sm p-3">
+                        <div class="card-body">
+                            <!-- Header: Tutor Info -->
+                            <div class="d-flex align-items-center mb-3">
+                                <img th:src="${tutor.imageUrl}" class="rounded-circle me-3" width="50" height="50"
+                                     alt="Tutor Image">
+                                <div>
+                                    <h5 class="mb-0" th:text="${tutor.name}">Tutor Name</h5>
+                                    <small class="text-muted">
+                                        <i class="fas fa-book me-1"></i><span th:text="${tutor.subject}">Subject</span>
+                                    </small>
+                                </div>
+                            </div>
+
+                            <p class="mb-2" th:text="${tutor.bio}">Tutor bio</p>
+
+                            <!-- Schedule -->
+                            <div class="mb-3">
+                <span class="badge bg-success me-1 mb-1"
+                      th:each="s : ${tutor.schedule}"
+                      th:text="${s.dayOfWeek + ' ' + s.startTime + '-' + s.endTime}">
+                </span>
+                            </div>
+
+                            <!-- Booking Status Badge -->
+                            <div th:if="${tutor.bookingStatus != null}" class="mb-2">
+                                <span th:text="${tutor.bookingStatus}" th:class="${tutor.statusBadgeClass}"></span>
+                            </div>
+
+                            <!-- Cancel Button (Only if Pending) -->
+                            <form th:if="${tutor.bookingStatus == 'PENDING'}"
+                                  th:action="@{/cancel-booking}" method="post" class="mt-2">
+                                <input type="hidden" name="tutorId" th:value="${tutor.id}"/>
+                                <button type="submit" class="btn btn-outline-danger btn-sm w-100 cancel-booking">
+                                    <span class="spinner-border spinner-border-sm me-2 d-none" role="status"
+                                          aria-hidden="true"></span>
+                                    <i class="fas fa-times-circle me-1"></i> Cancel Request
+                                </button>
+                            </form>
+
+                            <!-- Book Button -->
+                            <button class="btn btn-primary w-100 mt-2 open-booking"
+                                    th:if="${!tutor.isAlreadyBooked()}"
+                                    th:data-id="${tutor.id}"
+                                    th:data-name="${tutor.name}"
+                                    th:data-schedule="${tutor.scheduleJson}">
+                                <i class="fas fa-calendar-check me-2"></i> Book Session
+                            </button>
+
+                            <!-- Already Booked -->
+                            <button class="btn btn-secondary w-100 mt-2" disabled th:if="${tutor.alreadyBooked}">
+                                <i class="fas fa-clock me-2"></i> Already Booked
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div th:if="${#lists.isEmpty(tutors)}" class="text-center mt-5">
+                <p class="text-muted fs-5">No available tutors to book at this time.</p>
+            </div>
+
+
+        </div>
+    </div>
+    <!-----------------------------------------------------Available tutors section ends--------------------------------------->
+
+    <!-- Booking Modal -->
+    <div class="modal fade" id="bookingModal" tabindex="-1">
+        <div class="modal-dialog">
+            <form id="bookingForm" novalidate autocomplete="off">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-user-plus me-2 text-primary"></i>
+                            Book Tutor: <span id="modalTutorName"></span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="modalTutorId" name="tutorId">
+
+                        <label class="form-label">Select Time Slot</label>
+                        <select class="form-select" id="scheduleSelect" name="scheduleId" required></select>
+
+                        <label class="form-label mt-3">Your Message</label>
+                        <textarea class="form-control" name="message" rows="3" placeholder="Add a note..."
+                                  required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-paper-plane me-2"></i>Send Booking Request
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!------------------------------------------------Booking modal ends------------------------------------------------------->
+
+
+    <!-- Footer Section -->
+    <footer class="mt-5 py-3 text-center ">
+        <p class="mb-0">&copy; 2025 Math Mastery. All Rights Reserved.</p>
+        <a href="#contact" class="text-muted me-3">Contact</a>
+        <a href="#support" class="text-muted me-3">Support</a>
+        <a href="#privacy" class="text-muted">Privacy Policy</a>
+    </footer>
+    <!---------------------------------------------  Footer section ends -------------------------------------------------->
+
+
+    <!-------------------------------------------  Modals and offcanvas --------------------------------------------------->
+    <!--------------------------------------------------------------------------------------------------------------------->
+
+
+    <!-- Account Manager Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="accountManager" aria-labelledby="accountManagerLabel"
+         style="background-color: var(--background);">
+        <div class="offcanvas-header" style="border-bottom: 1px solid var(--primary);">
+            <h5 class="offcanvas-title" id="accountManagerOffcanvasLabel" style="font-size: 1.5rem; font-weight: bold;">
+                Account Manager</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"
+                    style="background-color: var(--secondary);">
+            </button>
+
+        </div>
+        <div class="offcanvas-body">
+            <div class="text-center mb-4">
+                <i class="fas fa-user-circle" style="font-size: 4rem; color: var(--secondary);"></i>
+                <p class="mt-2" style="font-size: 1.25rem; color: var(--text-dark);"><strong>Student Name</strong></p>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item d-flex align-items-center" style="border: none; padding: 15px;">
+                    <i class="fas fa-user me-3" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    <a href="#profile" class="text-decoration-none"
+                       style="color: var(--text-dark); font-size: 1.1rem;">Profile</a>
+                </li>
+                <li class="list-group-item d-flex align-items-center" style="border: none; padding: 15px;">
+                    <i class="fas fa-cog me-3" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    <a href="#settings" class="text-decoration-none"
+                       style="color: var(--text-dark); font-size: 1.1rem;">Settings</a>
+                </li>
+                <li class="list-group-item d-flex align-items-center" style="border: none; padding: 15px;">
+                    <i class="fas fa-bell me-3" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    <a href="#notifications" class="text-decoration-none"
+                       style="color: var(--text-dark); font-size: 1.1rem;">Notifications</a>
+                </li>
+            </ul>
+            <div class="text-center mt-4">
+                <button class="btn btn-primary"
+                        style="background-color: var(--primary); max-width: 100%; width: 380px; border: none; padding: 6px 24px; border-radius: 5px; font-size: 1rem;">
+                    Log Out
+                </button>
+            </div>
+        </div>
+    </div>
+    <!---------------------------------------------------------------Account manager offcanvas ends ------------------------------------------>
+
+    <!-- Toast Container -->
+    <div id="toast-container" aria-live="polite" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;"></div>
+    <!--------------------------------------Toast Container ends---------------------------------------------------------->
+
+
+</main>
+<!---------------------------------------------- Main content ends --------------------------------------------------------->
+
+<!-- JavaScript -->
+<script>
+
+
+    <!-- Sidebar functionality -->
+    document.addEventListener("DOMContentLoaded", () => {
+        const sidebar = document.getElementById("sidebar");
+        const toggleBtn = document.getElementById("sidebarToggle");
+        const mobileOpenBtn = document.getElementById("mobileSidebarOpen");
+        const sidebarCloseBtn = document.getElementById("sidebarClose");
+
+        // Restore sidebar state
+        const savedState = localStorage.getItem("sidebarState");
+        if (savedState === "collapsed") {
+            sidebar.classList.add("collapsed");
+            toggleBtn?.querySelector("i").classList.remove("fa-chevron-left");
+            toggleBtn?.querySelector("i").classList.add("fa-chevron-right");
+        }
+
+
+        // Toggle sidebar (desktop)
+        toggleBtn?.addEventListener("click", () => {
+
+            const scrollY = window.scrollY; // Save current scroll position
+
+            sidebar.classList.toggle("collapsed");
+            localStorage.setItem(
+                window.location.pathname + '-sidebarState',
+                sidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded'
+            );
+
+            setTimeout(() => {
+                window.scrollTo({top: scrollY}); // Restore scroll position after transition
+            });
+
+            const icon = toggleBtn.querySelector("i");
+            icon.classList.toggle("fa-chevron-left");
+            icon.classList.toggle("fa-chevron-right");
+
+            localStorage.setItem("sidebarState", sidebar.classList.contains("collapsed") ? "collapsed" : "expanded");
+        });
+
+        // Open sidebar (mobile)
+        mobileOpenBtn?.addEventListener("click", () => {
+            sidebar.classList.add("show");
+        });
+
+        // Close sidebar (mobile)
+        sidebarCloseBtn?.addEventListener("click", () => {
+            sidebar.classList.remove("show");
+        });
+
+        // Click outside to close (mobile)
+        document.addEventListener("click", (e) => {
+            if (window.innerWidth <= 768 &&
+                !sidebar.contains(e.target) &&
+                !mobileOpenBtn.contains(e.target)) {
+                sidebar.classList.remove("show");
+            }
+        });
+
+
+    });
+
+    // Mobile search bar toggle
+    document.addEventListener("DOMContentLoaded", () => {
+        const mobileSearchToggle = document.getElementById("mobileSearchToggle");
+        const mobileSearchBar = document.getElementById("mobileSearchBar");
+
+        mobileSearchToggle?.addEventListener("click", () => {
+            mobileSearchBar.style.display =
+                mobileSearchBar.style.display === "none" ? "block" : "none";
+        });
+    });
+
+    // Function to open booking modal
+    function openBookingModal(tutorId, tutorName, scheduleJson) {
+        document.getElementById("modalTutorId").value = tutorId;
+        document.getElementById("modalTutorName").textContent = tutorName;
+
+        console.log("Tutor id: " + tutorId);
+        console.log("Tutor name: " + tutorName);
+
+
+        const select = document.getElementById("scheduleSelect");
+        select.innerHTML = "";
+
+        const schedules = JSON.parse(scheduleJson);
+        schedules.forEach(s => {
+            const option = document.createElement("option");
+            option.value = s.id;
+            option.text = `${s.dayOfWeek} | ${s.startTime} - ${s.endTime}`;
+            select.appendChild(option);
+        });
+
+        console.log("Schedules: ", schedules);
+
+        new bootstrap.Modal(document.getElementById("bookingModal")).show();
+    }
+
+    // Attach click event to all buttons with .open-booking
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".open-booking").forEach(button => {
+            button.addEventListener("click", () => {
+                const id = button.dataset.id;
+                const name = button.dataset.name;
+                const schedule = button.dataset.schedule;
+                openBookingModal(id, name, schedule);
+            });
+        });
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".cancel-booking").forEach(button => {
+            button.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const btn = this;
+                const spinner = btn.querySelector(".spinner-border");
+
+                // Disable button and show spinner
+                btn.disabled = true;
+                spinner.classList.remove("d-none");
+                btn.querySelector("i").classList.add("d-none"); // hide icon while loading
+
+                const form = btn.closest("form");
+                fetch(form.action, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams(new FormData(form))
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            showToast("Booking cancelled successfully!", true);
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            showToast("Cancellation failed. Please try again.", false);
+                        }
+                    })
+                    .catch(() => {
+                        showToast("An error occurred. Try again.", false);
+                    })
+                    .finally(() => {
+                        // Re-enable button and hide spinner (in case of error)
+                        btn.disabled = false;
+                        spinner.classList.add("d-none");
+                        btn.querySelector("i").classList.remove("d-none");
+                    });
+            });
+        });
+
+        //     Show Toasts
+        function showToast(message, isSuccess = true) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toastEl = document.createElement('div');
+            toastEl.className = 'toast align-items-center text-white mb-2';
+            toastEl.classList.add(isSuccess ? 'bg-success' : 'bg-danger');
+            toastEl.setAttribute('role', 'alert');
+            toastEl.setAttribute('aria-live', 'assertive');
+            toastEl.setAttribute('aria-atomic', 'true');
+            toastEl.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body">${message}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>`;
+
+            container.appendChild(toastEl);
+            const toast = new bootstrap.Toast(toastEl, {delay: 5000});
+            toast.show();
+
+            toastEl.addEventListener('hidden.bs.toast', () => {
+                toastEl.remove();
+            });
+        }
+    });
+
+
+    //Tutor booking functionality
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("bookingForm");
+        const submitBtn = form.querySelector("button[type='submit']");
+        let isSubmitting = false;
+
+        form.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") e.preventDefault();
+        });
+
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            if (isSubmitting) return; // ✅ Prevent second submit
+            isSubmitting = true;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+Sending...
+`;
+
+            const tutorId = document.getElementById("modalTutorId").value;
+            const scheduleId = document.getElementById("scheduleSelect").value;
+            const message = form.message.value;
+            const studentId = document.getElementById("student_id").value;
+
+            fetch('/api/bookings', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: new URLSearchParams({tutorId, scheduleId, message, studentId})
+            })
+                .then(res => res.text())
+                .then(() => {
+                    window.location.href = `/booking-success?tutorId=${tutorId}&scheduleId=${scheduleId}`;
+                })
+                .catch(err => {
+                    alert("Booking failed. Try again.");
+                    console.error(err);
+                })
+                .finally(() => {
+                    isSubmitting = false;
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<i class="fas fa-paper-plane me-2"></i>Send Booking Request`;
+                });
+        });
+    });
+
+
+
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
