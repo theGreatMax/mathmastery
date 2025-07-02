@@ -29,276 +29,322 @@
     <link rel="manifest" href="/site.webmanifest">
 
 
-    <link  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <!-- AOS Library CSS -->
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/77f2c11478.js" crossorigin="anonymous"></script>
 
 </head>
 
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+</style>
+
 <body>
 
-<!--Header start-->
-<header>
-    <nav class="navbar navbar-expand-lg bg-white d-flex flex-wrap align-items-center border-bottom py-1"
-         style="position: fixed; top: 0; width: 100%; z-index: 1000;" id="header">
-        <div class="container d-flex flex-column flex-lg-row justify-content-between align-items-center ">
-            <!-- Logo and Brand -->
-            <a id="logo" th:href="@{/}" class="navbar-brand d-flex align-items-center fw-bold text-primary ms-0">
-                <img id="logo-image" th:src="@{/img/logo.png}" alt="Math Mastery Logo" class="me-2"
-                     style="height: 40px;">
-                <span>Math Mastery</span>
+<!--Header-->
+<header class="main-header">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <!-- Brand Logo -->
+            <a class="navbar-brand" th:href="@{/}">
+                <div class="brand-logo-header">
+                    <div class="logo-icon">
+                        <img th:src="@{/img/logo.png}" style="width: 35px;" alt="Math Mastery Logo">
+                    </div>
+                    <span class="brand-text">Math Mastery</span>
+                </div>
             </a>
-            <!-- Log In & Sign Up Buttons -->
-            <div class="header-right d-flex flex-column flex-lg-row justify-content-center align-items-center gap-2 mt-2 mt-lg-0">
-                <a class="btn btn-primary border-0" th:href="@{/login}" role="button"
-                   style="--bs-btn-bg: #1d9bf0; --bs-btn-hover-bg: #0c7abf">
-                    <i class="fa-solid fa-right-to-bracket"></i> Sign In
-                </a>
-                <a class="signup btn btn-secondary px-4" th:href="@{/signup}" id="header-signup" style="display:none;">
-                    <i class="fa-solid fa-user-plus"></i>
-                    Get Started</a>
+
+            <!-- Mobile Toggle Button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class=" ">
+                        <i class="fas fa-bars"></i>
+                    </span>
+            </button>
+
+            <!-- Navigation Menu -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about-us">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/contact-us}">Contact</a>
+                    </li>
+                </ul>
+
+                <!-- Header CTA Buttons -->
+                <div class="header-actions">
+                    <a th:href="@{/login}" class="btn btn-outline-primary me-2">Sign In</a>
+                    <a th:href="@{/signup}" class="btn btn-primary">Get Started</a>
+                </div>
             </div>
         </div>
     </nav>
 </header>
+<!---------------------------------------------------------- Header ends --------------------------------------------->
 
-<!-- Header ends -->
-
-
-<!-- Hero starts -->
-<div class="container pt-md-5 ">
-    <div class="hero-section row ">
-        <div class="col-lg-6 text-center order-1 order-md-1 order-lg-2 my-5">
-            <img th:src="@{/img/hero-img.png}" alt="Hero Image" class="hero-image" loading="lazy">
-        </div>
-        <div class="col-lg-6 col-md-12  order-2 order-md-2 order-lg-1">
-            <h5 class="hero-subtitle text-primary">Designed for FET students</h5>
-            <h1 class="hero-title">Enhance your <span class="text-primary">math</span> skills.</h1>
-            <p class="hero-description">
-                Access interactive lessons, engage in practice exercises, and test your skills with our exam simulation.
-                Receive
-                instant feedback, monitor your progress over time, and set personalized goals to prepare for upcoming
-                tests with
-                confidence.
-            </p>
-            <div class="d-flex ">
-                <a th:href="@{/signup}" class="btn btn-secondary px-4" id="hero-signup">
-                    <i class="fa-solid fa-user-plus"></i>
-                    Get started</a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Hero ends -->
-
-
-<!-- Service Start -->
-<div id="services" class="container my-5">
-    <div class="row text-left">
-        <div class="col-md-4" data-aos="fade-up">
-            <div class="feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-person-check" viewBox="0 0 16 16">
-                    <path d="M15.854 5.854a.5.5 0 0 0-.708-.708l-2.646 2.647-1.147-1.147a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
-                    <path d="M4.5 8a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
-                    <path d="M8 13.5c0-1.068-.703-1.874-1.342-2.333C6.01 10.637 5.005 10.5 4 10.5s-2.01.137-2.658.667C.703 11.626 0 12.432 0 13.5V14h8v-.5z"/>
-                </svg>
-            </div>
-            <h5>Find a Tutor</h5>
-            <p style="color: #8599BEFF">Easily find and book a tutor at your school to get the help you need to succeed.</p>
-        </div>
-        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-            <div class="feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
-                     class="bi bi-bar-chart-line"
-                     viewBox="0 0 16 16">
-                    <path
-                            d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1zm1 12h2V2h-2zm-3 0V7H7v7zm-5 0v-3H2v3z"/>
-                </svg>
-            </div>
-            <h5>Progress Tracking</h5>
-            <p style="color: #8599BEFF">
-                Progress tracking allows students to monitor their learning journey, identifying strengths and areas for
-                improvement by analyzing performance over time.
-            </p>
-        </div>
-        <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
-            <div class="feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
-                     class="bi bi-journal-check"
-                     viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                          d="M10.854 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 8.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
-                    <path
-                            d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/>
-                    <path
-                            d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z"/>
-                </svg>
-            </div>
-            <h5>Exam Simulation</h5>
-            <p style="color: #8599BEFF">
-                Exam simulations provide a realistic practice environment, helping students familiarize themselves with
-                exam
-                patterns and time management.
-            </p>
-        </div>
+<!-- Hero section -->
+<div class="hero-container mt-3">
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
     </div>
 
-</div>
-
-<!-- Service End -->
-
-
-<!-- About us starts -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-<section id="about-us" class="about-us py-5" style="background-color: #FDFDFDFF">
     <div class="container">
+        <div class="hero-section row align-items-center">
+            <!-- Content Column -->
+            <div class="col-lg-6 col-md-12 order-2 order-lg-1">
+                <div class="hero-content">
+                    <!-- Badge -->
+                    <div class="hero-badge text-center mx-auto mb-3">
+                        <i class="fas fa-graduation-cap"></i>
+                        Designed for FET Students
+                    </div>
 
-        <div class="row align-items-center">
-            <div class="col-md-6" data-aos="fade-up"><img th:src="@{img/about-us-image.png}" alt="About Us" class="img-fluid mb-5"></div>
-            <div class="col-md-6" data-aos="fade-up">
-                <h2 class="font-weight-bold mb-4">About Math Mastery</h2>
-                <p class="text-muted mb-4">
-                    Math Mastery is dedicated to transforming how students learn and excel in mathematics. Our platform
-                    combines
-                    interactive lessons, personalized practice, and exam simulations to ensure learners develop
-                    confidence and
-                    achieve their academic goals. We empower students with the tools they need to succeed.
-                </p>
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5 class="text-primary">Our Mission</h5>
-                        <ul class="list-unstyled">
-                            <li><i class="bi bi-check-circle me-2 text-primary"></i> Provide quality resources for
-                                mastering
-                                mathematics.
-                            </li>
-                            <li><i class="bi bi-check-circle me-2 text-primary"></i> Encourage continuous learning
-                                through interactive
-                                tools.
-                            </li>
-                            <li><i class="bi bi-check-circle me-2 text-primary"></i> Support students in achieving
-                                academic
-                                excellence.
-                            </li>
-                        </ul>
+                    <!-- Main Title -->
+                    <h1 class="hero-title">
+                        Enhance your <span class="gradient-text">math</span> skills with confidence
+                    </h1>
+
+                    <!-- Description -->
+                    <p class="hero-description">
+                        Access interactive lessons, engage in practice exercises, and test your skills with our advanced exam simulation. Receive instant feedback, monitor your progress over time, and set personalized goals to excel in your studies.
+                    </p>
+
+                    <!-- CTA Button -->
+                    <div class="hero-cta">
+                        <a th:href="@{/signup}" class="btn-enhanced" id="hero-signup">
+                            <i class="fas fa-rocket"></i>
+                            Start Learning Today
+                        </a>
                     </div>
-                    <div class="col-md-6">
-                        <h5 class="text-primary">Our Vision</h5>
-                        <ul class="list-unstyled">
-                            <li><i class="bi bi-bullseye me-2 text-primary"></i> Revolutionize mathematics education
-                                with technology.
-                            </li>
-                            <li><i class="bi bi-bullseye me-2 text-primary"></i> Foster a global community of confident
-                                math learners.
-                            </li>
-                            <li><i class="bi bi-bullseye me-2 text-primary"></i> Equip learners with skills for lifelong
-                                success.
-                            </li>
-                        </ul>
-                    </div>
+
                 </div>
-                <div class="d-flex">
-                    <a th:href="@{contact-us}" class="btn btn-primary mt-4 text-center">Get in touch</a>
+
+            </div>
+
+            <!-- Image Column -->
+            <div class="col-lg-6 col-md-12 text-center order-1 order-lg-2">
+                <div class="hero-image-container">
+                    <div class="hero-image-wrapper">
+                        <!-- Replace with your actual image -->
+                        <img th:src="@{/img/hero-img.png}"
+                             alt="Math Learning Platform"
+                             class="hero-image"
+                             loading="eager">
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
+<!---------------------------------------------------------- Hero ends ----------------------------------------------->
 
-    <div class="container-xxl py-5">
+<!-- About us section -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+<section class="about-section py-5 position-relative">
+
+    <!-- Service Start -->
+    <div id="services" class="services-container mb-5">
+        <!-- Floating Decorative Elements -->
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+
         <div class="container">
-            <div class="row g-4">
-                <!-- Grades We Focus On -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-right">
-                    <div class="card shadow-sm p-3 h-100" style="max-width: 350px; border-radius: 12px;">
-                        <div class="card-body">
-                            <h5 class="header">Grades we focus on</h5>
-                            <p class="card-text">Our resources are tailored for Grade <span
-                                    class="text-primary">10</span>, <span class="text-primary">11</span>, and <span
-                                    class="text-primary">12</span>, building a
-                                strong mathematical foundation for academic success.</p>
-                        </div>
-                    </div>
+            <!-- Section Header -->
+            <div class="services-header">
+                <div class="services-badge">
+                    <i class="fas fa-star"></i>
+                    Our Services
+                </div>
+                <h2 class="services-title">
+                    Everything you need to <span class="gradient-text">excel</span>
+                </h2>
+                <p id="services-paragraph" class="services-subtitle">
+                    Comprehensive tools and support designed to help FET students succeed in mathematics with confidence and achieve their academic goals.
+                </p>
+            </div>
+
+            <!-- Services Grid -->
+            <div class="services-grid">
+                <div class="row g-4" id="servicesContainer">
+                    <!-- Services will be dynamically inserted here -->
                 </div>
 
-                <!-- Practicing Topics -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-left">
-                    <div class="card shadow-sm p-3 h-100" style="max-width: 350px; border-radius: 12px;">
-                        <div class="card-body">
-                            <h5>Instant feedback</h5>
-                            <p class="card-text">Get real-time explanations and performance tracking for continuous
-                                improvement.</p>
-                        </div>
-                    </div>
-                </div>
+                <!-- Pagination -->
+                <div class="pagination-container" id="paginationContainer" style="display: none;">
+                    <button class="pagination-btn" id="prevBtn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
 
+                    <div class="pagination-dots" id="paginationDots"></div>
 
-                <!-- Tailored Practice -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up">
-                    <div class="card shadow-sm p-3 h-100" style="max-width: 350px; border-radius: 12px;">
-                        <div class="card-body">
-                            <h5>Tailored Practice</h5>
-                            <p class="card-text">Personalized practice sets and mock exams tailored to your grade level
-                                and learning
-                                progress for effective mastery.</p>
-                        </div>
-                    </div>
+                    <div class="pagination-info" id="paginationInfo"></div>
+
+                    <button class="pagination-btn" id="nextBtn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Service End -->
 
-    <div class="container mb-5">
-        <div class="row text-center">
-            <div class="col-md-3 col-6 mb-4" data-aos="zoom-in">
-                <i class="bi bi-pencil-square fs-1 text-primary mb-2"></i>
-                <h2 class="fw-bold">10,000+</h2>
-                <p class="text-muted">Questions Practiced</p>
+    <div class="floating-elements">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+    </div>
+
+    <div id="about-us" class="container hero-content mt-5">
+        <!-- Centered Top Badge -->
+        <div class="text-center mb-4">
+            <div class="section-badge">
+                <i class="bi bi-mortarboard me-2"></i>
+                About Math Mastery
             </div>
-            <div class="col-md-3 col-6 mb-4" data-aos="zoom-in">
-                <i class="bi bi-people fs-1 text-primary mb-2"></i>
-                <h2 class="fw-bold">5,000+</h2>
-                <p class="text-muted">Students Engaged</p>
+        </div>
+
+        <!-- Main Hero Content -->
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <h1 class="main-heading">Transforming Mathematics Education</h1>
+                <p class="lead-text">
+                    Math Mastery is dedicated to revolutionizing how students learn and excel in mathematics.
+                    Our innovative platform combines interactive lessons, personalized practice, and comprehensive
+                    exam simulations to ensure learners develop genuine confidence and achieve their academic goals.
+                </p>
             </div>
-            <div class="col-md-3 col-6 mb-4" data-aos="zoom-in">
-                <i class="bi bi-clock-history fs-1 text-primary mb-2"></i>
-                <h2 class="fw-bold">1,000+</h2>
-                <p class="text-muted">Hours Practiced</p>
+            <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+                <div class="image-container">
+                    <img th:src="@{img/about-us-image.png}"
+                         alt="Students learning mathematics"
+                         class="img-fluid">
+                </div>
             </div>
-            <div class="col-md-3 col-6 mb-4" data-aos="zoom-in">
-                <i class="bi bi-trophy fs-1 text-primary mb-2"></i>
-                <h2 class="fw-bold">500+</h2>
-                <p class="text-muted">Top Achievers</p>
+        </div>
+
+
+
+    <!-- Mission & Vision -->
+        <div class="mission-vision-grid" data-aos="fade-up">
+            <div class="mission-vision-card">
+                <h5><i class="bi bi-target me-2"></i>Our Mission</h5>
+                <ul class="mission-vision-list">
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Provide exceptional resources for mastering mathematics through innovative technology
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Encourage continuous learning through engaging and interactive educational tools
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Support students in achieving academic excellence and building lasting confidence
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Create an inclusive learning environment for students of all backgrounds
+                    </li>
+                </ul>
+            </div>
+
+            <div class="mission-vision-card">
+                <h5><i class="bi bi-eye me-2"></i>Our Vision</h5>
+                <ul class="mission-vision-list">
+                    <li>
+                        <i class="bi bi-bullseye"></i>
+                        Revolutionize mathematics education through cutting-edge technology and pedagogy
+                    </li>
+                    <li>
+                        <i class="bi bi-bullseye"></i>
+                        Foster a global community of confident and capable mathematics learners
+                    </li>
+                    <li>
+                        <i class="bi bi-bullseye"></i>
+                        Equip learners with essential skills for lifelong success in STEM fields
+                    </li>
+                    <li>
+                        <i class="bi bi-bullseye"></i>
+                        Make quality mathematics education accessible to students worldwide
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 </section>
-<!-- About Us Ends -->
+<!--------------------------------------------------------- About Us Ends -------------------------------------------->
 
+<!-- Try question section -->
+<div class="hero1">
+    <div class="floating-elements">
+        <i class="fas fa-question-circle floating-icon"></i>
+        <i class="fas fa-lightbulb floating-icon"></i>
+        <i class="fas fa-brain floating-icon"></i>
+        <i class="fas fa-star floating-icon"></i>
+    </div>
 
-
-<!-- Try question starts -->
-<div class="hero1 bg-dark">
-    <section id="try-question" class="text-overlay py-5 w-100">
+    <section id="try-question" class="w-100 py-5">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body">
-                            <h2 class="card-title text-center mb-4">Try This Question</h2>
-                            <p class="card-text text-center mb-4">
-                                Test your skills with a sample question and get instant feedback!
-                            </p>
-                            <div class="mb-3">
-                                <label id="question" class="form-label fw-bold"></label>
-                                <p id="sampleQuestion" class="fs-5"></p>
+                <div class="col-lg-10 col-xl-8">
+                    <div class="question-card">
+                        <div class="card-header-custom">
+                            <div class="title-icon">
+                                <i class="fas fa-brain fa-2x"></i>
                             </div>
-                            <div class="mb-3 input-group">
-                                <input type="text" class="form-control" id="sampleAnswer" placeholder="Enter your answer">
-                                <button class="btn btn-primary" type="button" id="submitSample">Submit Answer</button>
+                            <h2 class="card-title-enhanced">Try This Question</h2>
+                            <p class="card-subtitle">Test your knowledge and get instant feedback</p>
+                        </div>
+
+                        <div class="card-body-enhanced">
+                            <div class="question-container">
+                                <div class="question-label">
+                                    <i class="fas fa-question-circle me-2"></i>
+                                    Sample Question
+                                </div>
+                                <label id="question" class="form-label"></label>
+                                <p id="sampleQuestion" class="question-text">
+
+                                </p>
                             </div>
-                            <div id="sampleFeedback" class="text-center"></div>
+
+                            <div class="answer-section">
+                                <div class="input-group-enhanced">
+                                    <input
+                                            type="text"
+                                            class="form-control-enhanced"
+                                            id="sampleAnswer"
+                                            placeholder="Type your answer here..."
+                                            autocomplete="off"
+                                    >
+                                </div>
+
+                                <div class="text-center">
+                                    <button class="btn-submit" type="button" id="submitSample">
+                                        <i class="fas fa-paper-plane me-2"></i>
+                                        Submit Answer
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="sampleFeedback" class="feedback-area"></div>
+
                         </div>
                     </div>
                 </div>
@@ -306,15 +352,135 @@
         </div>
     </section>
 </div>
-<!-- Try question ends -->
+<!------------------------------------------------------ Try question ends ------------------------------------------->
 
+<!-- Footer -->
+<footer class="footer-container">
+    <!-- Floating Decorative Elements -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+
+    <!-- Main Footer Content -->
+    <div class="footer-main">
+        <div class="container">
+            <div class="row">
+                <!-- Brand & Newsletter Column -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-brand">
+                        <div class="brand-logo">
+                            <div class="brand-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <h4 class="brand-name">Math Mastery</h4>
+                        </div>
+                        <p class="brand-description">
+                            Empowering FET students to excel in mathematics through innovative learning tools, expert guidance, and comprehensive support.
+                        </p>
+
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-6">
+                    <div class="footer-section">
+                        <h5 class="footer-title">Quick Links</h5>
+                        <ul class="footer-links">
+                            <li>
+                                <a href="#" class="footer-link">
+                                    <i class="fas fa-chevron-right"></i>
+                                    Home
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="footer-link">
+                                    <i class="fas fa-chevron-right"></i>
+                                    About Us
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="footer-link">
+                                    <i class="fas fa-chevron-right"></i>
+                                    Services
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="footer-link">
+                                    <i class="fas fa-chevron-right"></i>
+                                    Contact
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="footer-link">
+                                    <i class="fas fa-chevron-right"></i>
+                                    Support
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-section">
+                        <h5 class="footer-title">Get In Touch</h5>
+
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-details">
+                                <div class="contact-label">Address</div>
+                                <div class="contact-value">123 Math Street, Education City</div>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-details">
+                                <div class="contact-label">Email</div>
+                                <div class="contact-value">support@mathmastery.com</div>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="contact-details">
+                                <div class="contact-label">Phone</div>
+                                <div class="contact-value">+1 (123) 456-7890</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="footer-bottom-content">
+                <p class="copyright">
+                    © 2025 Math Mastery. All rights reserved.
+                </p>
+                <ul class="footer-bottom-links">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-------------------------------------------------------- Footer Ends ----------------------------------------------->
 
 <!-- scripts -->
-<!-- AOS Library JS -->
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/app.js}"></script>
-
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -334,52 +500,7 @@
         "keywords": "math practice, math quizzes, online math tool, exam preparation, past papers"
     }
 </script>
-
-<!-- Footer Starts -->
-<footer class="bg-light py-5 " style="color: #8599BEFF">
-    <div class="container ">
-        <div class="row">
-            <!-- About Section -->
-            <div class="col-lg-4 col-md-6 mb-4">
-                <h4 class="text-secondary" style="color: #007BFF">Math Mastery</h4>
-                <!-- Social Media Icons -->
-                <div class="mt-3" style="color: #8599BEFF">
-                    <a href="#" class=" me-3" style="color: #8599BEFF"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class=" me-3" style="color: #8599BEFF"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class=" me-3" style="color: #8599BEFF"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="" style="color: #8599BEFF"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-            </div>
-
-            <!-- Quick Links -->
-            <div class="col-lg-4 col-md-6 mb-4">
-                <h5 class="text-secondary" style="color: #007BFF">Quick Links</h5>
-                <ul class="list-unstyled">
-                    <li><a th:href="@{/}" style="color: #8599BEFF">Home</a></li>
-                    <li><a href="" id="footer-about-link" style="color: #8599BEFF">About Us</a></li>
-                    <li><a href="" id="footer-services" style="color: #8599BEFF">Services</a></li>
-                    <li><a th:href="@{/contact-us}" style="color: #8599BEFF">Contact</a></li>
-                </ul>
-            </div>
-
-            <!-- Contact Details -->
-            <div class="col-lg-4 col-md-6">
-                <h5 class="text-secondary" style="color: #007BFF">Contact Us</h5>
-                <ul class="list-unstyled">
-                    <li><i class="fas fa-map-marker-alt " style="color: #8599BEFF"></i> 123 Math Street, Education City
-                    </li>
-                    <li><i class="fas fa-envelope " style="color: #8599BEFF"></i> support@mathmastery.com</li>
-                    <li><i class="fas fa-phone-alt " style="color: #8599BEFF"></i> +1 (123) 456-7890</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class=" text-center py-3 mt-4">
-        <p class="mb-0">© 2025 Math Mastery. All rights reserved.</p>
-    </div>
-</footer>
-<!-- Footer Ends -->
-
+<!-------------------------------------------------------- scripts Ends ----------------------------------------------->
 </body>
 
 

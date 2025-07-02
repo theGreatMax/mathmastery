@@ -63,7 +63,7 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) //enable in production)
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/signup", "/sign-up-success", "/login", "/contact-us", "/css/**", "/js/**", "/img/**", "/api/homequestions", "/verify", "/verify-email", "/verification-result", "/forgot-password","/reset-password", "/practice-mode").permitAll()
+                        .requestMatchers("/", "/site.webmanifest", "/signup", "/sign-up-success", "/login", "/contact-us", "/css/**", "/js/**", "/img/**", "/api/homequestions", "/verify", "/verify-email", "/verification-result", "/forgot-password","/reset-password", "/practice-mode").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/student/**").hasRole("STUDENT")
